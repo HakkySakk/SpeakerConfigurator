@@ -32,9 +32,9 @@ function calculateVolume() {
   const woofer = parseInt(document.getElementById("wooferCount").value);
   const type = document.getElementById("cabinetType").value;
 
-  const volume = ((h - 2 * wall) * (w - 2 * wall) * (d - 2 * wall)) / 1000;
-  const materialVol = ((h * w * d - (h - 2 * wall) * (w - 2 * wall) * (d - 2 * wall)) / 1000).toFixed(1);
-  const weight = (materialVol * materialDensities[mat] / 1000).toFixed(1);
+  const volume = ((h - 2 * wall) * (w - 2 * wall) * (d - 2 * wall)) / 10000;
+  const materialVol = ((h * w * d - (h - 2 * wall) * (w - 2 * wall) * (d - 2 * wall)) / 10000).toFixed(1);
+  const weight = (materialVol * materialDensities[mat] / 10000).toFixed(1);
   const freq = simulateStandardResponse(volume, type, 30);
 
   document.getElementById("results").innerHTML = `
