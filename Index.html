@@ -4,61 +4,233 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Högtalarkabinett-konfigurator</title>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=SF+Pro+Text:wght@400;600&display=swap"
+    rel="stylesheet"
+  />
   <style>
-    /* Klistra in hela CSS-koden jag skickade tidigare här */
+    /* --- Apple-inspirerad CSS --- */
+    :root {
+      --color-bg: #f5f5f7;
+      --color-surface: #ffffff;
+      --color-text-primary: #1d1d1f;
+      --color-text-secondary: #6e6e73;
+      --color-accent: #0071e3;
+      --color-border: #d2d2d7;
+      --color-shadow: rgba(0, 0, 0, 0.1);
+    }
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      font-family: 'SF Pro Text', -apple-system, BlinkMacSystemFont, 'Segoe UI',
+        Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue',
+        sans-serif;
+      background-color: var(--color-bg);
+      color: var(--color-text-primary);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    nav {
+      display: flex;
+      justify-content: center;
+      background-color: var(--color-surface);
+      border-bottom: 1px solid var(--color-border);
+      box-shadow: 0 2px 4px var(--color-shadow);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    nav button {
+      all: unset;
+      cursor: pointer;
+      padding: 18px 28px;
+      font-weight: 600;
+      font-size: 16px;
+      color: var(--color-text-secondary);
+      border-bottom: 3px solid transparent;
+      transition: color 0.3s, border-color 0.3s;
+      user-select: none;
+    }
+    nav button:hover {
+      color: var(--color-accent);
+    }
+    nav button.active {
+      color: var(--color-accent);
+      border-bottom-color: var(--color-accent);
+    }
+    .container {
+      max-width: 960px;
+      margin: 2rem auto 4rem auto;
+      background-color: var(--color-surface);
+      padding: 32px 40px;
+      border-radius: 14px;
+      box-shadow: 0 10px 20px var(--color-shadow);
+    }
+    h1 {
+      font-weight: 600;
+      font-size: 28px;
+      margin-bottom: 24px;
+      color: var(--color-text-primary);
+    }
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: var(--color-text-secondary);
+    }
+    input[type="number"],
+    select {
+      width: 100%;
+      padding: 12px 14px;
+      font-size: 16px;
+      border: 1px solid var(--color-border);
+      border-radius: 10px;
+      background-color: var(--color-bg);
+      color: var(--color-text-primary);
+      transition: border-color 0.25s ease;
+      outline-offset: 2px;
+    }
+    input[type="number"]:focus,
+    select:focus {
+      border-color: var(--color-accent);
+      outline: none;
+      background-color: #e6f0ff;
+    }
+    button.primary {
+      background-color: var(--color-accent);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 14px 30px;
+      font-weight: 600;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 24px;
+      box-shadow: 0 4px 12px rgba(0, 113, 227, 0.5);
+      transition: background-color 0.3s ease;
+      user-select: none;
+    }
+    button.primary:hover {
+      background-color: #005bb5;
+      box-shadow: 0 6px 16px rgba(0, 91, 181, 0.7);
+    }
+    #results,
+    #hornDetails {
+      margin-top: 30px;
+      font-size: 16px;
+      color: var(--color-text-primary);
+      line-height: 1.4;
+    }
+    .hidden {
+      display: none;
+    }
+    .form-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 24px;
+    }
+    canvas {
+      margin-top: 30px;
+      border: 1px solid var(--color-border);
+      border-radius: 14px;
+      background-color: var(--color-bg);
+      box-shadow: inset 0 0 10px #e0e0e0;
+      display: block;
+      max-width: 100%;
+      height: auto;
+    }
+    @media (max-width: 600px) {
+      .container {
+        padding: 24px 20px;
+        margin: 1rem auto 3rem auto;
+      }
+      nav button {
+        padding: 12px 16px;
+        font-size: 14px;
+      }
+    }
   </style>
 </head>
 <body>
   <nav>
-    <button id="btnStandard" class="active" onclick="switchSection('standard', this)">Standard</button>
-    <button id="btnHorn" onclick="switchSection('horn', this)">Folded Horn</button>
-    <button id="btnPressure" onclick="switchSection('pressure', this)">Lufttryck (Folded Horn)</button>
+    <button id="btnStandard" class="active" onclick="showSection('standard')">
+      Standard
+    </button>
+    <button id="btnHorn" onclick="showSection('horn')">Folded Horn</button>
   </nav>
 
-  <div class="container">
-    <!-- Standardhögtalare -->
+  <main class="container">
+    <h1>Högtalarkabinett-konfigurator</h1>
+
+    <!-- Standard Section -->
     <section id="standardSection">
-      <h1>Standardhögtalare</h1>
-      <label for="height">Höjd (mm)</label>
-      <input type="number" id="height" value="400" min="100" max="2000" />
-      <label for="width">Bredd (mm)</label>
-      <input type="number" id="width" value="300" min="100" max="1000" />
-      <label for="depth">Djup (mm)</label>
-      <input type="number" id="depth" value="300" min="100" max="1000" />
-      <label for="wallThickness">Väggtjocklek (mm)</label>
-      <input type="number" id="wallThickness" value="18" min="10" max="50" />
-      <label for="materialType">Material</label>
-      <select id="materialType">
-        <option value="mdf">MDF</option>
-        <option value="plywood">Plywood</option>
-        <option value="hdf">HDF</option>
-      </select>
-      <label for="wooferCount">Antal högtalarelement</label>
-      <input type="number" id="wooferCount" value="1" min="1" max="10" />
-      <label for="cabinetType">Typ av låda</label>
-      <select id="cabinetType">
-        <option value="sealed">Sluten</option>
-        <option value="ported">Basreflex</option>
-      </select>
+      <div class="form-row">
+        <div>
+          <label for="height">Höjd (mm)</label>
+          <input type="number" id="height" value="600" min="100" />
+        </div>
+        <div>
+          <label for="width">Bredd (mm)</label>
+          <input type="number" id="width" value="300" min="100" />
+        </div>
+        <div>
+          <label for="depth">Djup (mm)</label>
+          <input type="number" id="depth" value="350" min="100" />
+        </div>
+        <div>
+          <label for="wallThickness">Väggtjocklek (mm)</label>
+          <input type="number" id="wallThickness" value="18" min="10" />
+        </div>
+        <div>
+          <label for="materialType">Material</label>
+          <select id="materialType">
+            <option value="mdf">MDF</option>
+            <option value="plywood">Plywood</option>
+            <option value="hdf">HDF</option>
+          </select>
+        </div>
+        <div>
+          <label for="wooferCount">Antal högtalarelement</label>
+          <input type="number" id="wooferCount" value="1" min="1" max="4" />
+        </div>
+        <div>
+          <label for="cabinetType">Typ av låda</label>
+          <select id="cabinetType">
+            <option value="sealed">Sluten</option>
+            <option value="ported">Basreflex</option>
+          </select>
+        </div>
+      </div>
+
       <button class="primary" onclick="calculateVolume()">Beräkna</button>
       <button class="primary" onclick="exportToPDF()">Exportera till PDF</button>
+
       <div id="results"></div>
     </section>
 
-    <!-- Folded Horn -->
+    <!-- Folded Horn Section -->
     <section id="hornSection" class="hidden">
-      <h1>Folded Horn</h1>
       <div class="form-row">
         <div>
           <label for="hornHeight">Höjd (mm)</label>
-          <input type="number" id="hornHeight" value="800" min="100" max="3000" />
+          <input type="number" id="hornHeight" value="800" min="100" />
+        </div>
+        <div>
           <label for="hornWidth">Bredd (mm)</label>
-          <input type="number" id="hornWidth" value="400" min="100" max="1500" />
+          <input type="number" id="hornWidth" value="350" min="100" />
+        </div>
+        <div>
           <label for="hornDepth">Djup (mm)</label>
-          <input type="number" id="hornDepth" value="400" min="100" max="1500" />
+          <input type="number" id="hornDepth" value="400" min="100" />
+        </div>
+        <div>
           <label for="hornWallThickness">Väggtjocklek (mm)</label>
-          <input type="number" id="hornWallThickness" value="18" min="10" max="50" />
+          <input type="number" id="hornWallThickness" value="18" min="10" />
+        </div>
+        <div>
           <label for="hornMaterialType">Material</label>
           <select id="hornMaterialType">
             <option value="mdf">MDF</option>
@@ -68,51 +240,133 @@
         </div>
         <div>
           <label for="wooferCountHorn">Antal högtalarelement</label>
-          <input type="number" id="wooferCountHorn" value="1" min="1" max="10" />
-          <label for="hornLength">Hornlängd (mm)</label>
-          <input type="number" id="hornLength" value="1200" min="200" max="5000" />
+          <input type="number" id="wooferCountHorn" value="1" min="1" max="4" />
+        </div>
+        <div>
           <label for="folds">Antal veck</label>
-          <input type="number" id="folds" value="4" min="1" max="10" />
+          <input type="number" id="folds" value="3" min="1" max="10" />
+        </div>
+        <div>
+          <label for="hornLength">Hornets längd (mm)</label>
+          <input type="number" id="hornLength" value="2000" min="500" />
+        </div>
+        <div>
           <label for="portDiameter">Basreflexport diameter (mm)</label>
-          <input type="number" id="portDiameter" value="80" min="20" max="300" />
+          <input type="number" id="portDiameter" value="80" min="20" />
+        </div>
+        <div>
           <label for="portLength">Basreflexport längd (mm)</label>
-          <input type="number" id="portLength" value="150" min="20" max="500" />
+          <input type="number" id="portLength" value="150" min="20" />
         </div>
       </div>
-      <button class="primary" onclick="drawHorn()">Visa & beräkna</button>
-      <button class="primary" onclick="exportHornToPDF()">Exportera till PDF</button>
-      <div id="hornDetails"></div>
+
+      <button class="primary" onclick="drawHorn()">Visualisera</button>
+      <button class="primary" onclick="exportToPDF()">Exportera till PDF</button>
+
       <canvas id="hornCanvas" width="500" height="300"></canvas>
+      <div id="hornDetails"></div>
     </section>
+  </main>
 
-    <!-- Lufttryck visualisering -->
-    <section id="pressureSection" class="hidden">
-      <h1>Lufttryck i Folded Horn</h1>
-      <canvas id="pressureCanvas" width="600" height="200"></canvas>
-    </section>
-  </div>
-
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script src="script.js"></script>
   <script>
-    // Menyknappar och sektion switch
-    function switchSection(section, btn) {
-      document.querySelectorAll("nav button").forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
+    // Navigation toggling between sections
+    function showSection(section) {
+      const btnStandard = document.getElementById('btnStandard');
+      const btnHorn = document.getElementById('btnHorn');
+      const standardSection = document.getElementById('standardSection');
+      const hornSection = document.getElementById('hornSection');
 
-      document.getElementById("standardSection").classList.add("hidden");
-      document.getElementById("hornSection").classList.add("hidden");
-      document.getElementById("pressureSection").classList.add("hidden");
-
-      if (section === "standard") {
-        document.getElementById("standardSection").classList.remove("hidden");
-      } else if (section === "horn") {
-        document.getElementById("hornSection").classList.remove("hidden");
-        drawHorn();
-      } else if (section === "pressure") {
-        document.getElementById("pressureSection").classList.remove("hidden");
-        drawPressureCurve();
+      if (section === 'standard') {
+        btnStandard.classList.add('active');
+        btnHorn.classList.remove('active');
+        standardSection.classList.remove('hidden');
+        hornSection.classList.add('hidden');
+      } else {
+        btnHorn.classList.add('active');
+        btnStandard.classList.remove('active');
+        hornSection.classList.remove('hidden');
+        standardSection.classList.add('hidden');
       }
+    }
+
+    // Standard volume calculation
+    function calculateVolume() {
+      const height = Number(document.getElementById('height').value);
+      const width = Number(document.getElementById('width').value);
+      const depth = Number(document.getElementById('depth').value);
+      const wall = Number(document.getElementById('wallThickness').value);
+
+      const innerHeight = height - wall * 2;
+      const innerWidth = width - wall * 2;
+      const innerDepth = depth - wall * 2;
+
+      if (innerHeight <= 0 || innerWidth <= 0 || innerDepth <= 0) {
+        alert('Väggtjockleken är för stor för dimensionerna.');
+        return;
+      }
+
+      const volume = (innerHeight * innerWidth * innerDepth) / 1000000; // i liter
+
+      const resultDiv = document.getElementById('results');
+      resultDiv.textContent = `Inre volym: ${volume.toFixed(2)} liter`;
+    }
+
+    // Folded horn visualisering
+    function drawHorn() {
+      const canvas = document.getElementById('hornCanvas');
+      const ctx = canvas.getContext('2d');
+
+      // Hämta värden
+      const height = Number(document.getElementById('hornHeight').value);
+      const width = Number(document.getElementById('hornWidth').value);
+      const depth = Number(document.getElementById('hornDepth').value);
+      const wall = Number(document.getElementById('hornWallThickness').value);
+      const folds = Number(document.getElementById('folds').value);
+      const hornLength = Number(document.getElementById('hornLength').value);
+
+      // Rensa canvas
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Grundinställningar
+      ctx.strokeStyle = '#0071e3';
+      ctx.lineWidth = 3;
+      ctx.fillStyle = '#cce4ff';
+
+      // Skalningsfaktor för att få plats på canvas (max bredd 480)
+      const scaleX = 480 / (width * folds);
+      const scaleY = 280 / height;
+      const scale = Math.min(scaleX, scaleY);
+
+      // Beräkna ruta för varje veck
+      const foldWidth = width * scale;
+      const foldHeight = height * scale;
+
+      // Rita folded horn som staplade rektanglar som representerar veck
+      for (let i = 0; i < folds; i++) {
+        const x = i * foldWidth;
+        ctx.fillRect(x, canvas.height - foldHeight - 20, foldWidth - 5, foldHeight);
+        ctx.strokeRect(x, canvas.height - foldHeight - 20, foldWidth - 5, foldHeight);
+      }
+
+      // Lägg till en text som visar total längd
+      ctx.fillStyle = '#0071e3';
+      ctx.font = 'bold 16px "SF Pro Text", sans-serif';
+      ctx.fillText(`Antal veck: ${folds}`, 10, 20);
+      ctx.fillText(`Hornets längd: ${hornLength} mm`, 10, 40);
+
+      // Visa hornets dimensioner i text
+      const details = document.getElementById('hornDetails');
+      details.innerHTML = `
+        <p>Dimensioner (HxBxD): ${height} x ${width} x ${depth} mm</p>
+        <p>Väggtjocklek: ${wall} mm</p>
+        <p>Antal veck: ${folds}</p>
+        <p>Hornets längd: ${hornLength} mm</p>
+      `;
+    }
+
+    // Export till PDF - placeholder
+    function exportToPDF() {
+      alert('Export till PDF är ännu inte implementerat.');
     }
   </script>
 </body>
