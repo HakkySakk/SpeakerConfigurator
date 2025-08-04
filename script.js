@@ -1,52 +1,78 @@
-// script.js
+// Materialdensiteter i kg/m³
+const materialDensities = {
+  mdf: 750,
+  plywood: 600,
+  hdf: 850
+};
 
-// Hantera formulär och sidnavigering
-const foldedHornBtn = document.getElementById("foldedHornBtn");
-const foldedHornSection = document.getElementById("foldedHornSection");
-const otherSection = document.getElementById("otherSection");
+function drawHorn() {
+  // 1. Hämta värden
+  const height = parseInt(document.getElementById("hornHeight").value);
+  const width = parseInt(document.getElementById("hornWidth").value);
+  const depth = parseInt(document.getElementById("hornDepth").value);
+  const wall = parseInt(document.getElementById("hornWallThickness").value);
+  const material = document.getElementById("hornMaterialType").value;
+  const wooferCount = parseInt(document.getElementById("wooferCountHorn").value);
+  const hornLength = parseInt(document.getElementById("hornLength").value);
+  const folds = parseInt(document.getElementById("folds").value);
 
-foldedHornBtn.addEventListener("click", () => {
-  foldedHornSection.classList.remove("hidden");
-  otherSection.classList.add("hidden");
-  initHornVisualization();
-});
+  // 2. Beräkna volymer
+  const outerVolume = (height * width * depth) / 1_000_000; // m³
+  const innerVolume = ((height - 2 * wall) * (width - 2 * wall) * (depth - 2 * wall)) / 1_000_000; // m³
+  const materialVolume = outerVolume - innerVolume;
+  const weight = (materialVolume * materialDensities[material]).toFixed(1); // kg
 
-// Materialdata för viktberäkning
-const plywoodDensity = 700; // kg/m³ (typiskt för björkplywood)
+  // 3. Frekvensomfång
+  const L = hornLength / 1000; // i meter
+  const c = 343;
+  const f1 = Math.round(c / (4 * L));
+  const freqRange = `~${f1} Hz – ${f1 * 5} Hz`;
 
-// Rita folded horn visualisering i 3D
-function initHornVisualization() {
+  // 4. Visa resultat
+  document.getElementById("hornDetails").innerHTML = `
+    <p><strong>Inre volym:</strong> ${(innerVolume * 1000).toFixed(1)} liter</p>
+    <p><strong>Materialvolym:</strong> ${(materialVolume * 1000).toFixed(1)} liter</p>
+    <p><strong>Vikt:</strong> ${weight} kg</p>
+    <p><strong>Frekvensomfång:</strong> ${freqRange}</p>
+    <p><strong>Element:</strong> ${wooferCount} st</p>
+    <p><strong>Hornlängd:</strong> ${hornLength} mm (${folds} veck)</p>
+  `;
+
+  // 5. Rendera 3D
+  initThreeScene(width, height, depth);
+}
+
+function initThreeScene(width, height, depth) {
   const container = document.getElementById("threeContainer");
-  container.innerHTML = "";
+  container.innerHTML = ""; // Rensa tidigare modell
 
+  // Skapa scen
   const scene = new THREE.Scene();
-  scene.background = new THREE.Color(0xf0f0f0);
+  scene.background = new THREE.Color("#f5f5f5");
 
-  const camera = new THREE.PerspectiveCamera(
-    45,
-    container.clientWidth / container.clientHeight,
-    0.1,
-    5000
-  );
-  camera.position.set(0, 500, 1000);
+  const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
+  camera.position.set(0, height / 100, depth / 100 + 2);
 
   const renderer = new THREE.WebGLRenderer({ antialias: true });
   renderer.setSize(container.clientWidth, container.clientHeight);
   container.appendChild(renderer.domElement);
 
-  const controls = new THREE.OrbitControls(camera, renderer.domElement);
-  controls.enableDamping = true;
+  // Ljus
+  const light = new THREE.DirectionalLight(0xffffff, 1);
+  light.position.set(1, 1, 1);
+  scene.add(light);
+  scene.add(new THREE.AmbientLight(0xaaaaaa));
 
-  // Enkel volym med öppning - placeholder
-  const box = new THREE.Mesh(
-    new THREE.BoxGeometry(400, 800, 500),
-    new THREE.MeshStandardMaterial({ color: 0xcccccc, transparent: true, opacity: 0.6 })
-  );
+  // Skapa låda (högtalare)
+  const geometry = new THREE.BoxGeometry(width / 1000, height / 1000, depth / 1000);
+  const material = new THREE.MeshStandardMaterial({ color: 0x5555ff, transparent: true, opacity: 0.6 });
+  const box = new THREE.Mesh(geometry, material);
   scene.add(box);
 
-  const light = new THREE.DirectionalLight(0xffffff, 1);
-  light.position.set(1, 1, 1).normalize();
-  scene.add(light);
+  // Kontroller (rota, zooma)
+  const controls = new THREE.OrbitControls(camera, renderer.domElement);
+  controls.enableDamping = true;
+  controls.dampingFactor = 0.1;
 
   function animate() {
     requestAnimationFrame(animate);
@@ -55,18 +81,3 @@ function initHornVisualization() {
   }
   animate();
 }
-
-// Uträkning av materialvikt (exempel)
-function calculateMaterialWeight(width, height, depth, thickness) {
-  const mm3ToM3 = 1e-9;
-  const outerVolume = width * height * depth;
-  const innerVolume = (width - 2 * thickness) * (height - 2 * thickness) * (depth - 2 * thickness);
-  const panelVolume = (outerVolume - innerVolume) * mm3ToM3; // m³
-  return panelVolume * plywoodDensity; // kg
-}
-
-// Exempel på att skriva ut vikt
-const weightOutput = document.getElementById("materialWeight");
-const exampleWeight = calculateMaterialWeight(400, 800, 500, 18);
-if (weightOutput) weightOutput.textContent = `Materialvikt: ${exampleWeight.toFixed(1)} kg`;
-
