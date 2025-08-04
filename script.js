@@ -49,56 +49,168 @@ function calculateVolume() {
 }
 
 function drawHorn() {
-  const canvas = document.getElementById('hornCanvas');
-  const ctx = canvas.getContext('2d');
-
-  const height = Number(document.getElementById('hornHeight').value);
-  const width = Number(document.getElementById('hornWidth').value);
-  const depth = Number(document.getElementById('hornDepth').value);
-  const wall = Number(document.getElementById('hornWallThickness').value);
-  const folds = Number(document.getElementById('folds').value);
-  const hornLength = Number(document.getElementById('hornLength').value);
-  const material = document.getElementById('hornMaterialType').value;
-
+  const canvas = document.getElementById("hornCanvas");
+  const ctx = canvas.getContext("2d");
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  const scaleX = 480 / (width * folds);
-  const scaleY = 280 / height;
-  const scale = Math.min(scaleX, scaleY);
+  const L = parseInt(document.getElementById("hornLength").value);
+  const folds = parseInt(document.getElementById("folds").value);
+  const wooferCount = parseInt(document.getElementById("wooferCountHorn").value);
+  const portD = parseInt(document.getElementById("portDiameter").value);
+  const portL = parseInt(document.getElementById("portLength").value);
 
-  const foldWidth = width * scale;
-  const foldHeight = height * scale;
+  const h = parseInt(document.getElementById("hornHeight").value);
+  const w = parseInt(document.getElementById("hornWidth").value);
+  const d = parseInt(document.getElementById("hornDepth").value);
+  const wall = parseInt(document.getElementById("hornWallThickness").value);
+  const mat = document.getElementById("hornMaterialType").value;
+
+  const volume = ((h - 2 * wall) * (w - 2 * wall) * (d - 2 * wall)) / 1_000_000;
+  const materialVol = ((h * w * d - (h - 2 * wall) * (w - 2 * wall) * (d - 2 * wall)) / 1_000_000).toFixed(1);
+  const weight = (materialVol * materialDensities[mat]).toFixed(1);
+
+  const foldH = (canvas.height - 40) / folds;
+  const margin = 20;
+
+  ctx.beginPath();
+  ctx.moveTo(margin, margin);
 
   for (let i = 0; i < folds; i++) {
-    const x = i * foldWidth;
-    ctx.fillStyle = '#0071e3';
-    ctx.fillRect(x, canvas.height - foldHeight - 20, foldWidth - 5, foldHeight);
-    ctx.strokeStyle = '#004a99';
-    ctx.lineWidth = 2;
-    ctx.strokeRect(x, canvas.height - foldHeight - 20, foldWidth - 5, foldHeight);
+    const x = i % 2 === 0 ? canvas.width - margin : margin;
+    const y = margin + (i + 1) * foldH;
+    ctx.lineTo(x, y);
+  }
+  ctx.strokeStyle = "#444";
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  for (let i = 0; i <= folds; i++) {
+    const x = i % 2 === 0 ? margin : canvas.width - margin;
+    const y = margin + i * foldH;
+    ctx.beginPath();
+    ctx.arc(x, y, 6, 0, 2 * Math.PI);
+    ctx.fillStyle = i % 2 === 0 ? "#007BFF" : "#FF0000";
+    ctx.fill();
   }
 
-  ctx.fillStyle = '#0071e3';
-  ctx.font = 'bold 16px "SF Pro Text", sans-serif';
-  ctx.fillText(`Antal veck: ${folds}`, 10, 20);
-  ctx.fillText(`Hornets längd: ${hornLength} mm`, 10, 40);
+  const portArea = Math.PI * Math.pow(portD / 2, 2) / 100;
 
-  const outerVolumeM3 = (height * width * depth) / 1000000;
-  const innerHeight = (height - wall * 2) / 1000;
-  const innerWidth = (width - wall * 2) / 1000;
-  const innerDepth = hornLength / 1000;
-
-
-  const innerVolumeM3 = innerHeight * innerWidth * innerDepth;
-  const materialVolumeM3 = outerVolumeM3 - innerVolumeM3;
-  const density = materialVolumeM3 * getMaterialDensity(material) / 1000;
-  const weight = materialVolumeM3 * density
-
-  document.getElementById('hornDetails').innerHTML = `
-    <p>Dimensioner (HxBxD): ${height} x ${width} x ${depth} mm</p>
-    <p>Väggtjocklek: ${wall} mm</p>
-    <p>Antal veck: ${folds}</p>
-    <p>Hornets längd: ${hornLength} mm</p>
-    <p><strong>Materialvikt:</strong> ${weight.toFixed(2)} kg (${material.toUpperCase()})</p>
+  document.getElementById("hornRange").innerText = `Frekvensomfång: ${simulateHornResponse(L)}`;
+  document.getElementById("hornDetails").innerHTML = `
+    <p><strong>Element:</strong> ${wooferCount} st</p>
+    <p><strong>Basreflexport:</strong> Portyta: ${portArea.toFixed(1)} cm², Längd: ${portL} mm</p>
+    <p><strong>Inre volym:</strong> ${volume.toFixed(1)} liter</p>
+    <p><strong>Materialvolym:</strong> ${materialVol} liter</p>
+    <p><strong>Vikt:</strong> ${weight} kg</p>
   `;
+
+  drawPressureCurve();
+  initHorn3DView();
+}
+
+function drawPressureCurve() {
+  const canvas = document.getElementById("pressureCanvas");
+  const ctx = canvas.getContext("2d");
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  const folds = parseInt(document.getElementById("folds").value);
+  const hornLength = parseInt(document.getElementById("hornLength").value);
+  const samples = 100;
+  const pressure = [];
+
+  for (let i = 0; i <= samples; i++) {
+    const x = i / samples;
+    const standingWave = Math.sin(Math.PI * x);
+    pressure.push(standingWave);
+  }
+
+  ctx.beginPath();
+  ctx.moveTo(40, 10);
+  ctx.lineTo(40, canvas.height - 30);
+  ctx.lineTo(canvas.width - 10, canvas.height - 30);
+  ctx.strokeStyle = "#999";
+  ctx.lineWidth = 1;
+  ctx.stroke();
+
+  ctx.beginPath();
+  for (let i = 0; i <= samples; i++) {
+    const x = 40 + i * ((canvas.width - 60) / samples);
+    const y = canvas.height - 30 - pressure[i] * (canvas.height - 60);
+    if (i === 0) ctx.moveTo(x, y);
+    else ctx.lineTo(x, y);
+  }
+  ctx.strokeStyle = "#FF6600";
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  ctx.fillStyle = "#000";
+  ctx.font = "12px sans-serif";
+  ctx.fillText("0", 30, canvas.height - 25);
+  ctx.fillText("Hornlängd (mm)", canvas.width / 2 - 30, canvas.height - 10);
+  ctx.fillText("Lufttryck", 5, 20);
+}
+
+function initHorn3DView() {
+  const container = document.getElementById("threeDContainer");
+  container.innerHTML = "";
+
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(0xf2f2f2);
+
+  const camera = new THREE.PerspectiveCamera(45, container.clientWidth / 500, 0.1, 1000);
+  camera.position.set(0, 100, 200);
+
+  const renderer = new THREE.WebGLRenderer({ antialias: true });
+  renderer.setSize(container.clientWidth, 500);
+  container.appendChild(renderer.domElement);
+
+  const controls = new THREE.OrbitControls(camera, renderer.domElement);
+  controls.enableDamping = true;
+
+  const light = new THREE.HemisphereLight(0xffffff, 0x444444);
+  light.position.set(0, 200, 0);
+  scene.add(light);
+
+  const h = parseInt(document.getElementById("hornHeight").value);
+  const w = parseInt(document.getElementById("hornWidth").value);
+  const d = parseInt(document.getElementById("hornDepth").value);
+  const wall = parseInt(document.getElementById("hornWallThickness").value);
+  const folds = parseInt(document.getElementById("folds").value);
+
+  const hornMaterial = new THREE.MeshStandardMaterial({ color: 0xaaaaaa, metalness: 0.1, roughness: 0.8 });
+
+  const wallGeometry = new THREE.BoxGeometry(w, wall, d);
+  const topWall = new THREE.Mesh(wallGeometry, hornMaterial);
+  topWall.position.set(0, h / 2, 0);
+  scene.add(topWall);
+
+  const bottomWall = topWall.clone();
+  bottomWall.position.y = -h / 2;
+  scene.add(bottomWall);
+
+  const sideWallGeometry = new THREE.BoxGeometry(wall, h, d);
+  const leftWall = new THREE.Mesh(sideWallGeometry, hornMaterial);
+  leftWall.position.set(-w / 2, 0, 0);
+  scene.add(leftWall);
+
+  const rightWall = leftWall.clone();
+  rightWall.position.x = w / 2;
+  scene.add(rightWall);
+
+  const foldSpacing = h / (folds + 1);
+  for (let i = 0; i < folds; i++) {
+    const path = new THREE.BoxGeometry(w - 2 * wall, wall, d - 2 * wall);
+    const fold = new THREE.Mesh(path, new THREE.MeshStandardMaterial({ color: 0x6666ff }));
+    fold.position.set(0, h / 2 - (i + 1) * foldSpacing, 0);
+    fold.rotation.y = (i % 2 === 0) ? 0 : Math.PI;
+    scene.add(fold);
+  }
+
+  function animate() {
+    requestAnimationFrame(animate);
+    controls.update();
+    renderer.render(scene, camera);
+  }
+
+  animate();
 }
