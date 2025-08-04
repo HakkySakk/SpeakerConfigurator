@@ -45,20 +45,33 @@
     </section>
 
     <!-- 🔊 FOLDED HORN -->
-    <section id="hornSection" class="hidden">
-      <h1>Folded Horn</h1>
-      <label>Hornlängd (mm): <input id="hornLength" type="number" value="2000"></label>
-      <label>Antal veck: <input id="folds" type="number" value="4" min="1" max="8"></label>
-      <button onclick="drawHorn()">Visa horn</button>
-      <div id="hornRange"></div>
-      <canvas id="hornCanvas" width="800" height="300"></canvas>
-     
-      <label for="wooferCountHorn">Antal element:</label>
-      <input type="number" id="wooferCountHorn" value="1" min="1"><br>
-      <label for="portDiameter">Portdiameter (mm):</label>
-      <input type="number" id="portDiameter" value="100" min="20" max="300"><br>
-      <label for="portLength">Portlängd (mm):</label>
-      <input type="number" id="portLength" value="150" min="50" max="1000"><br>
+    <div id="hornSection" class="hidden">
+  <h2>Folded Horn Konfiguration</h2>
+  <label>Längd på horn (mm): <input type="number" id="hornLength" value="1000" /></label><br />
+  <label>Antal veck (folds): <input type="number" id="folds" value="3" /></label><br />
+  <label>Element (antal): <input type="number" id="wooferCountHorn" value="1" /></label><br />
+  <label>Höjd (mm): <input type="number" id="hornHeight" value="500" /></label><br />
+  <label>Bredd (mm): <input type="number" id="hornWidth" value="400" /></label><br />
+  <label>Djup (mm): <input type="number" id="hornDepth" value="600" /></label><br />
+  <label>Materialtjocklek (mm): <input type="number" id="hornWallThickness" value="18" /></label><br />
+  <label>Material:
+    <select id="hornMaterialType">
+      <option value="mdf">MDF</option>
+      <option value="plywood">Plywood</option>
+      <option value="hdf">HDF</option>
+    </select>
+  </label><br />
+  <label>Portdiameter (mm): <input type="number" id="portDiameter" value="80" /></label><br />
+  <label>Portlängd (mm): <input type="number" id="portLength" value="100" /></label><br />
+
+  <button onclick="drawHorn()">Uppdatera horn</button>
+
+  <p id="hornRange"></p>
+  <div id="hornDetails"></div>
+
+  <canvas id="hornCanvas" width="500" height="300" style="border:1px solid #ccc;"></canvas>
+  <canvas id="pressureCanvas" width="500" height="150" style="border:1px solid #ccc; margin-top: 10px;"></canvas>
+</div>
       <h3>Tryckfördelning längs hornet</h3>
 <canvas id="pressureCanvas" width="600" height="200" style="border:1px solid #ccc; margin-top:10px;"></canvas>
     </section>
