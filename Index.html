@@ -6,6 +6,8 @@
   <title>Högtalarkabinett-konfigurator</title>
   <link rel="stylesheet" href="styles.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.154.0/build/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.154.0/examples/js/controls/OrbitControls.min.js"></script>
 </head>
 <body>
   <header>
@@ -53,7 +55,7 @@
     <button onclick="drawHorn()">Rita och beräkna</button>
 
     <canvas id="hornCanvas" width="500" height="320"></canvas>
-
+    <div id="threeDContainer" style="width:100%; height:500px; margin-top: 2rem;"></div>
     <div id="hornDetails"></div>
   </section>
 
