@@ -3,140 +3,83 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Folded Horn-konfigurator</title>
+  <title>Folded Horn Högtalarkonfigurator</title>
   <style>
-    body {
-      font-family: sans-serif;
-      margin: 20px;
-    }
-    .hidden {
-      display: none;
-    }
-    label {
-      display: block;
-      margin-top: 10px;
-    }
-    input, select {
-      padding: 5px;
-      margin-top: 3px;
-      width: 100%;
-      max-width: 200px;
-    }
-    button {
-      margin-top: 20px;
-      padding: 10px 15px;
-      font-size: 1rem;
-      cursor: pointer;
-    }
-    canvas {
-      border: 1px solid #ccc;
-      margin-top: 15px;
-      max-width: 100%;
-    }
-    #results, #hornDetails {
-      margin-top: 15px;
-      background: #f9f9f9;
-      padding: 15px;
-      border-radius: 5px;
-      max-width: 400px;
-    }
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    .hidden { display: none; }
+    label { display: block; margin-top: 10px; }
+    input, select { margin-top: 5px; padding: 5px; width: 100%; max-width: 300px; }
+    button { margin-top: 15px; padding: 10px 20px; }
+    canvas { border: 1px solid #ccc; margin-top: 10px; }
+    #hornDetails p { margin: 5px 0; }
   </style>
 </head>
 <body>
-  <h1>Folded Horn-konfigurator</h1>
+  <h1>Folded Horn Högtalarkonfigurator</h1>
 
-  <label for="cabinetType">Välj typ av högtalarkabinett:</label>
-  <select id="cabinetType" onchange="showSection(this.value)">
-    <option value="standard">Standard</option>
-    <option value="horn">Folded Horn</option>
-  </select>
+  <label>
+    Välj typ:
+    <select id="cabinetType" onchange="showSection(this.value)">
+      <option value="standard">Standard</option>
+      <option value="horn">Folded Horn</option>
+    </select>
+  </label>
 
-  <!-- Standard högtalarlåda -->
+  <!-- Standard Section -->
   <section id="standardSection">
     <h2>Standard Högtalarlåda</h2>
 
-    <label for="height">Höjd (mm):</label>
-    <input type="number" id="height" value="400" min="100" />
+    <label>Höjd (mm): <input type="number" id="height" value="500" /></label>
+    <label>Bredd (mm): <input type="number" id="width" value="300" /></label>
+    <label>Djup (mm): <input type="number" id="depth" value="300" /></label>
+    <label>Väggtjocklek (mm): <input type="number" id="wallThickness" value="18" /></label>
+    <label>Material:
+      <select id="materialType">
+        <option value="mdf">MDF (750 kg/m³)</option>
+        <option value="plywood">Plywood (600 kg/m³)</option>
+        <option value="hdf">HDF (850 kg/m³)</option>
+      </select>
+    </label>
+    <label>Antal högtalarelement: <input type="number" id="wooferCount" value="1" min="1" /></label>
 
-    <label for="width">Bredd (mm):</label>
-    <input type="number" id="width" value="300" min="100" />
-
-    <label for="depth">Djup (mm):</label>
-    <input type="number" id="depth" value="350" min="100" />
-
-    <label for="wallThickness">Väggtjocklek (mm):</label>
-    <input type="number" id="wallThickness" value="18" min="10" />
-
-    <label for="materialType">Material:</label>
-    <select id="materialType">
-      <option value="mdf">MDF (750 kg/m³)</option>
-      <option value="plywood">Plywood (600 kg/m³)</option>
-      <option value="hdf">HDF (850 kg/m³)</option>
-    </select>
-
-    <label for="wooferCount">Antal högtalarelement:</label>
-    <input type="number" id="wooferCount" value="1" min="1" max="4" />
-
-    <label for="cabinetType">Typ:</label>
-    <select id="cabinetTypeStandard">
-      <option value="sealed">Sluten</option>
-      <option value="ported">Basreflex</option>
-    </select>
-
-    <button onclick="calculateVolume()">Beräkna volym och vikt</button>
+    <button onclick="calculateVolume()">Beräkna</button>
     <button onclick="exportToPDF()">Exportera till PDF</button>
 
     <div id="results"></div>
   </section>
 
-  <!-- Folded Horn sektion -->
+  <!-- Folded Horn Section -->
   <section id="hornSection" class="hidden">
-    <h2>Folded Horn</h2>
+    <h2>Folded Horn Högtalarlåda</h2>
 
-    <label for="hornHeight">Höjd (mm):</label>
-    <input type="number" id="hornHeight" value="1000" min="100" />
+    <label>Höjd (mm): <input type="number" id="hornHeight" value="1200" /></label>
+    <label>Bredd (mm): <input type="number" id="hornWidth" value="350" /></label>
+    <label>Djup (mm): <input type="number" id="hornDepth" value="350" /></label>
+    <label>Väggtjocklek (mm): <input type="number" id="hornWallThickness" value="18" /></label>
+    <label>Material:
+      <select id="hornMaterialType">
+        <option value="mdf">MDF (750 kg/m³)</option>
+        <option value="plywood">Plywood (600 kg/m³)</option>
+        <option value="hdf">HDF (850 kg/m³)</option>
+      </select>
+    </label>
 
-    <label for="hornWidth">Bredd (mm):</label>
-    <input type="number" id="hornWidth" value="400" min="100" />
-
-    <label for="hornDepth">Djup (mm):</label>
-    <input type="number" id="hornDepth" value="300" min="100" />
-
-    <label for="hornWallThickness">Väggtjocklek (mm):</label>
-    <input type="number" id="hornWallThickness" value="18" min="10" />
-
-    <label for="hornMaterialType">Material:</label>
-    <select id="hornMaterialType">
-      <option value="mdf">MDF (750 kg/m³)</option>
-      <option value="plywood">Plywood (600 kg/m³)</option>
-      <option value="hdf">HDF (850 kg/m³)</option>
-    </select>
-
-    <label for="hornLength">Hornlängd (mm):</label>
-    <input type="number" id="hornLength" value="2000" min="500" />
-
-    <label for="folds">Antal veck:</label>
-    <input type="number" id="folds" value="4" min="1" max="10" />
-
-    <label for="wooferCountHorn">Antal högtalarelement:</label>
-    <input type="number" id="wooferCountHorn" value="1" min="1" max="4" />
-
-    <label for="portDiameter">Basreflexport diameter (mm):</label>
-    <input type="number" id="portDiameter" value="80" min="20" max="200" />
-
-    <label for="portLength">Basreflexport längd (mm):</label>
-    <input type="number" id="portLength" value="150" min="50" max="1000" />
-
-    <canvas id="hornCanvas" width="400" height="300"></canvas>
-    <canvas id="pressureCanvas" width="400" height="150"></canvas>
-
-    <div id="hornRange"></div>
-    <div id="hornDetails"></div>
+    <label>Hornlängd (mm): <input type="number" id="hornLength" value="2400" /></label>
+    <label>Antal folds: <input type="number" id="folds" value="4" min="1" max="10" /></label>
+    <label>Antal högtalarelement: <input type="number" id="wooferCountHorn" value="1" min="1" /></label>
+    <label>Basreflexport diameter (mm): <input type="number" id="portDiameter" value="80" /></label>
+    <label>Basreflexport längd (mm): <input type="number" id="portLength" value="150" /></label>
 
     <button onclick="drawHorn()">Uppdatera visualisering</button>
+
+    <canvas id="hornCanvas" width="400" height="300"></canvas>
+    <div id="hornDetails"></div>
+
+    <h3>Lufttryck längs hornet</h3>
+    <canvas id="pressureCanvas" width="400" height="150"></canvas>
   </section>
 
-  <script src="https://cdn.jsdelivr.net/npm/jspdf@latest/dist/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
