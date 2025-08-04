@@ -70,7 +70,6 @@ function calculateVolume() {
   const resultDiv = document.getElementById('results');
   resultDiv.innerHTML = `
     <p>Inre volym: ${volume.toFixed(2)} liter</p>
-    <p>Materialvikt: ${weight.toFixed(2)} kg (${material.toUpperCase()})</p>
   `;
 }
 
