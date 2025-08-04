@@ -83,10 +83,11 @@ function drawHorn() {
   ctx.fillText(`Antal veck: ${folds}`, 10, 20);
   ctx.fillText(`Hornets längd: ${hornLength} mm`, 10, 40);
 
-  const outerVolumeM3 = (height / 1000) * (width / 1000) * (depth / 1000);
+  const outerVolumeM3 = (height * width * depth) / 1000000;
   const innerHeight = (height - wall * 2) / 1000;
   const innerWidth = (width - wall * 2) / 1000;
   const innerDepth = hornLength / 1000;
+
 
   const innerVolumeM3 = innerHeight * innerWidth * innerDepth;
   const materialVolumeM3 = outerVolumeM3 - innerVolumeM3;
