@@ -2,74 +2,65 @@
 <html lang="sv">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Folded Horn Konfigurator</title>
   <link rel="stylesheet" href="styles.css" />
-
+  <!-- Material Symbols (Google) -->
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
   <!-- Three.js CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/three@0.160.1/build/three.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.160.1/examples/js/controls/OrbitControls.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.158.0/examples/js/controls/OrbitControls.min.js"></script>
 </head>
 <body>
-  <header>
-    <h1>Folded Horn Konfigurator</h1>
-  </header>
+  <main class="container">
+    <h1>Folded Horn Designer</h1>
 
-  <main>
-    <section>
-      <label for="hornHeight">Höjd (mm):</label>
-      <input type="number" id="hornHeight" value="1000" />
+    <section class="form-grid">
+      <label>Höjd (mm)
+        <input type="number" id="hornHeight" value="600" />
+      </label>
 
-      <label for="hornWidth">Bredd (mm):</label>
-      <input type="number" id="hornWidth" value="500" />
+      <label>Bredd (mm)
+        <input type="number" id="hornWidth" value="400" />
+      </label>
 
-      <label for="hornDepth">Djup (mm):</label>
-      <input type="number" id="hornDepth" value="400" />
+      <label>Djup (mm)
+        <input type="number" id="hornDepth" value="500" />
+      </label>
 
-      <label for="hornWallThickness">Väggtjocklek (mm):</label>
-      <input type="number" id="hornWallThickness" value="18" />
+      <label>Väggtjocklek (mm)
+        <input type="number" id="hornWallThickness" value="18" />
+      </label>
 
-      <label for="hornMaterialType">Material:</label>
-      <select id="hornMaterialType">
-        <option value="mdf">MDF</option>
-        <option value="plywood">Plywood</option>
-        <option value="hdf">HDF</option>
-      </select>
+      <label>Material
+        <select id="hornMaterialType">
+          <option value="mdf">MDF</option>
+          <option value="plywood">Plywood</option>
+          <option value="hdf">HDF</option>
+        </select>
+      </label>
 
-      <label for="hornLength">Hornlängd (mm):</label>
-      <input type="number" id="hornLength" value="1200" />
+      <label>Antal element
+        <input type="number" id="wooferCountHorn" value="1" />
+      </label>
 
-      <label for="folds">Antal veck:</label>
-      <input type="number" id="folds" value="4" />
+      <label>Hornlängd (mm)
+        <input type="number" id="hornLength" value="1200" />
+      </label>
 
-      <label for="wooferCountHorn">Antal högtalarelement:</label>
-      <input type="number" id="wooferCountHorn" value="1" />
+      <label>Antal veck
+        <input type="number" id="folds" value="2" />
+      </label>
 
-      <label for="portDiameter">Basreflexport (diameter mm):</label>
-      <input type="number" id="portDiameter" value="100" />
-
-      <label for="portLength">Basreflexport (längd mm):</label>
-      <input type="number" id="portLength" value="150" />
-
-      <button onclick="drawHorn()">Rita horn</button>
+      <button onclick="drawHorn()" class="btn">
+        <span class="material-symbols-outlined">calculate</span>
+        Beräkna & Visualisera
+      </button>
     </section>
 
-    <section>
-      <h2>Resultat</h2>
-      <div id="hornRange"></div>
-      <div id="hornDetails"></div>
-      <div id="materialWeight"></div>
-    </section>
+    <section id="hornDetails" class="results"></section>
 
-    <section>
-      <h2>Tryckfördelning</h2>
-      <canvas id="pressureCanvas" width="600" height="150"></canvas>
-    </section>
-
-    <section>
-      <h2>3D-Visualisering</h2>
-      <div id="threeContainer" style="width:100%; height:500px;"></div>
-    </section>
+    <section id="threeContainer" class="three-view"></section>
   </main>
 
   <script src="script.js"></script>
