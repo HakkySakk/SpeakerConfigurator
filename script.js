@@ -70,7 +70,7 @@ function initThreeScene(width, height, depth) {
   scene.add(box);
 
   // Kontroller (rota, zooma)
-  const controls = new THREE.OrbitControls(camera, renderer.domElement);
+  const controls = new OrbitControls(camera, renderer.domElement);
   controls.enableDamping = true;
   controls.dampingFactor = 0.1;
 
