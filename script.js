@@ -99,14 +99,28 @@ function drawHorn() {
   const ctx = canvas.getContext("2d");
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  const L = parseInt(document.getElementById("hornLength").value);
+  const L = parseInt(document.getElementById("hornLength").value); // i mm
   const folds = parseInt(document.getElementById("folds").value);
+  const wooferCount = parseInt(document.getElementById("wooferCountHorn").value);
+  const portD = parseInt(document.getElementById("portDiameter").value);
+  const portL = parseInt(document.getElementById("portLength").value);
+
+  const h = parseInt(document.getElementById("hornHeight").value);
+  const w = parseInt(document.getElementById("hornWidth").value);
+  const d = parseInt(document.getElementById("hornDepth").value);
+  const wall = parseInt(document.getElementById("hornWallThickness").value);
+  const mat = document.getElementById("hornMaterialType").value;
+
+  const volume = ((h - 2 * wall) * (w - 2 * wall) * (d - 2 * wall)) / 1_000_000;
+  const materialVol = ((h * w * d - (h - 2 * wall) * (w - 2 * wall) * (d - 2 * wall)) / 1_000_000).toFixed(1);
+  const weight = (materialVol * materialDensities[mat]).toFixed(1);
+
   const foldH = (canvas.height - 40) / folds;
   const margin = 20;
 
+  // Rita hornets väg
   ctx.beginPath();
   ctx.moveTo(margin, margin);
-
   for (let i = 0; i < folds; i++) {
     const x = i % 2 === 0 ? canvas.width - margin : margin;
     const y = margin + (i + 1) * foldH;
@@ -116,16 +130,68 @@ function drawHorn() {
   ctx.lineWidth = 2;
   ctx.stroke();
 
-  // Lufttryck: blå (högt) och röd (lågt)
+  // Rita trycknoder och bukar
+  const f1 = simulateHornResponseFrequency(L);
+  const lambda = 343 / f1; // våglängd i meter
+  const hornLengthM = L / 1000;
+
+  const totalPoints = 100;
+  const points = [];
+
+  for (let i = 0; i <= totalPoints; i++) {
+    const x = i / totalPoints * canvas.width;
+    const normX = i / totalPoints * hornLengthM;
+    const amplitude = Math.sin((2 * Math.PI * normX) / lambda);
+    const y = canvas.height / 2 - amplitude * 40; // amplituden visualiserad
+
+    points.push({ x, y });
+  }
+
+  // Rita sinuskurva
+  ctx.beginPath();
+  ctx.moveTo(points[0].x, points[0].y);
+  for (let pt of points) {
+    ctx.lineTo(pt.x, pt.y);
+  }
+  ctx.strokeStyle = "rgba(255, 100, 0, 0.8)";
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  // Färgzoner för högt/lågt tryck
+  for (let pt of points) {
+    const pressure = (Math.sin((2 * Math.PI * pt.x / canvas.width * hornLengthM) / lambda));
+    const alpha = Math.abs(pressure);
+    ctx.beginPath();
+    ctx.arc(pt.x, canvas.height - 10, 3, 0, 2 * Math.PI);
+    ctx.fillStyle = `rgba(0, 150, 255, ${alpha})`;
+    ctx.fill();
+  }
+
+  // Rita punktmarkeringar i hornets väg
   for (let i = 0; i <= folds; i++) {
     const x = i % 2 === 0 ? margin : canvas.width - margin;
     const y = margin + i * foldH;
     ctx.beginPath();
     ctx.arc(x, y, 6, 0, 2 * Math.PI);
-    ctx.fillStyle = i % 2 === 0 ? '#007BFF' : '#FF0000';
+    ctx.fillStyle = i % 2 === 0 ? "#007BFF" : "#FF0000";
     ctx.fill();
   }
 
-  document.getElementById("hornRange").innerText =
-    `Frekvensomfång: ${simulateHornResponse(L)}`;
+  const portArea = Math.PI * Math.pow(portD / 2, 2) / 100;
+
+  document.getElementById("hornRange").innerText = `Frekvensomfång: ${simulateHornResponse(L)}`;
+  document.getElementById("hornDetails").innerHTML = `
+    <p><strong>Element:</strong> ${wooferCount} st</p>
+    <p><strong>Basreflexport:</strong> Portyta: ${portArea.toFixed(1)} cm², Längd: ${portL} mm</p>
+    <p><strong>Inre volym:</strong> ${volume.toFixed(1)} liter</p>
+    <p><strong>Materialvolym:</strong> ${materialVol} liter</p>
+    <p><strong>Vikt:</strong> ${weight} kg</p>
+    <p><strong>Grundresonans:</strong> ~${f1} Hz, våglängd: ${lambda.toFixed(2)} m</p>
+  `;
+}
+
+function simulateHornResponseFrequency(hornLengthMm) {
+  const L = hornLengthMm / 1000;
+  const c = 343;
+  return Math.round(c / (4 * L));
 }
