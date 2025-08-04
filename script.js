@@ -43,7 +43,7 @@ function calculateVolume() {
   const weight = (materialVolume * (density)) / 1000000;
 
 
- const details = document.getElementById('results').innerHTML = `
+const resultDiv = document.getElementById('results').innerHTML = `
     <p><strong>Inre volym:</strong> ${volume.toFixed(2)} liter</p>
     <p><strong>Materialvikt:</strong> ${weight.toFixed(2)} kg (${material.toUpperCase()})</p>
   `;
@@ -95,7 +95,7 @@ function drawHorn() {
   const weight = (materialVolumeM3 * (density) / 1000000));
 
 
-  const details document.getElementById('hornDetails').innerHTML = `
+  const resultDiv = document.getElementById('hornDetails').innerHTML = `
     <p>Dimensioner (HxBxD): ${height} x ${width} x ${depth} mm</p>
     <p>Väggtjocklek: ${wall} mm</p>
     <p>Antal veck: ${folds}</p>
