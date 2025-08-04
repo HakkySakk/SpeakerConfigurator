@@ -40,7 +40,7 @@ function calculateVolume() {
   const outerVolume = (height * width * depth) / 1000000;
   const materialVolume = outerVolume - volume;
   const density = getMaterialDensity(material);
-  const weight = materialVolume * density / 1000000;
+  const weight = materialVolume * density / 1000;
 
   document.getElementById('results').innerHTML = `
     <p><strong>Inre volym:</strong> ${volume.toFixed(2)} liter</p>
@@ -91,7 +91,7 @@ function drawHorn() {
   const innerVolumeM3 = innerHeight * innerWidth * innerDepth;
   const materialVolumeM3 = outerVolumeM3 - innerVolumeM3;
   const density = getMaterialDensity(material);
-  const weight = materialVolumeM3 * density / 10000000;
+  const weight = materialVolumeM3 * density / 10000;
 
   document.getElementById('hornDetails').innerHTML = `
     <p>Dimensioner (HxBxD): ${height} x ${width} x ${depth} mm</p>
