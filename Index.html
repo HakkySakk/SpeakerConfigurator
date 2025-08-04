@@ -2,84 +2,76 @@
 <html lang="sv">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Högtalarkabinett Konfigurator</title>
-  <link rel="stylesheet" href="styles.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Folded Horn Konfigurator</title>
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- Three.js CDN -->
   <script src="https://cdn.jsdelivr.net/npm/three@0.160.1/build/three.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.160.1/examples/js/controls/OrbitControls.min.js"></script>
-  <script defer src="script.js"></script>
 </head>
 <body>
   <header>
-    <h1>Högtalarkabinett Konfigurator</h1>
-    <nav>
-      <button onclick="showSection('standard')">Standardlåda</button>
-      <button onclick="showSection('horn')">Folded Horn</button>
-    </nav>
+    <h1>Folded Horn Konfigurator</h1>
   </header>
 
   <main>
-    <!-- Standardhögtalare -->
-    <section id="standardSection">
-      <h2>Standardkabinett</h2>
-      <div class="form">
-        <label>Höjd (mm)<input type="number" id="height" value="500" /></label>
-        <label>Bredd (mm)<input type="number" id="width" value="300" /></label>
-        <label>Djup (mm)<input type="number" id="depth" value="400" /></label>
-        <label>Väggtjocklek (mm)<input type="number" id="wallThickness" value="18" /></label>
-        <label>Material
-          <select id="materialType">
-            <option value="mdf">MDF</option>
-            <option value="plywood">Plywood</option>
-            <option value="hdf">HDF</option>
-          </select>
-        </label>
-        <label>Antal element<input type="number" id="wooferCount" value="1" /></label>
-        <label>Typ
-          <select id="cabinetType">
-            <option value="sealed">Sluten</option>
-            <option value="ported">Basreflex</option>
-          </select>
-        </label>
-      </div>
-      <button onclick="calculateVolume()">Beräkna</button>
-      <button onclick="exportToPDF()">Exportera till PDF</button>
-      <div id="results" class="results"></div>
+    <section>
+      <label for="hornHeight">Höjd (mm):</label>
+      <input type="number" id="hornHeight" value="1000" />
+
+      <label for="hornWidth">Bredd (mm):</label>
+      <input type="number" id="hornWidth" value="500" />
+
+      <label for="hornDepth">Djup (mm):</label>
+      <input type="number" id="hornDepth" value="400" />
+
+      <label for="hornWallThickness">Väggtjocklek (mm):</label>
+      <input type="number" id="hornWallThickness" value="18" />
+
+      <label for="hornMaterialType">Material:</label>
+      <select id="hornMaterialType">
+        <option value="mdf">MDF</option>
+        <option value="plywood">Plywood</option>
+        <option value="hdf">HDF</option>
+      </select>
+
+      <label for="hornLength">Hornlängd (mm):</label>
+      <input type="number" id="hornLength" value="1200" />
+
+      <label for="folds">Antal veck:</label>
+      <input type="number" id="folds" value="4" />
+
+      <label for="wooferCountHorn">Antal högtalarelement:</label>
+      <input type="number" id="wooferCountHorn" value="1" />
+
+      <label for="portDiameter">Basreflexport (diameter mm):</label>
+      <input type="number" id="portDiameter" value="100" />
+
+      <label for="portLength">Basreflexport (längd mm):</label>
+      <input type="number" id="portLength" value="150" />
+
+      <button onclick="drawHorn()">Rita horn</button>
     </section>
 
-    <!-- Folded Horn -->
-    <section id="hornSection" class="hidden">
-      <h2>Folded Horn</h2>
-      <div class="form">
-        <label>Höjd (mm)<input type="number" id="hornHeight" value="800" /></label>
-        <label>Bredd (mm)<input type="number" id="hornWidth" value="400" /></label>
-        <label>Djup (mm)<input type="number" id="hornDepth" value="500" /></label>
-        <label>Väggtjocklek (mm)<input type="number" id="hornWallThickness" value="18" /></label>
-        <label>Material
-          <select id="hornMaterialType">
-            <option value="mdf">MDF</option>
-            <option value="plywood">Plywood</option>
-            <option value="hdf">HDF</option>
-          </select>
-        </label>
-        <label>Hornlängd (mm)<input type="number" id="hornLength" value="1500" /></label>
-        <label>Antal veck<input type="number" id="folds" value="5" /></label>
-        <label>Antal element<input type="number" id="wooferCountHorn" value="1" /></label>
-        <label>Portdiameter (mm)<input type="number" id="portDiameter" value="100" /></label>
-        <label>Portlängd (mm)<input type="number" id="portLength" value="150" /></label>
-      </div>
-      <button onclick="drawHorn()">Simulera och visualisera</button>
-      <div id="hornRange" class="results"></div>
-      <div id="hornDetails" class="results"></div>
-      <canvas id="hornCanvas" width="600" height="300"></canvas>
+    <section>
+      <h2>Resultat</h2>
+      <div id="hornRange"></div>
+      <div id="hornDetails"></div>
+      <div id="materialWeight"></div>
+    </section>
+
+    <section>
+      <h2>Tryckfördelning</h2>
       <canvas id="pressureCanvas" width="600" height="150"></canvas>
-      <div id="threeContainer" style="width:100%; height:500px; margin-top:2rem;"></div>
+    </section>
+
+    <section>
+      <h2>3D-Visualisering</h2>
+      <div id="threeContainer" style="width:100%; height:500px;"></div>
     </section>
   </main>
 
-  <footer>
-    <p>&copy; 2025 Högtalarkabinett Designverktyg</p>
-  </footer>
+  <script src="script.js"></script>
 </body>
 </html>
