@@ -40,7 +40,7 @@ function calculateVolume() {
   const outerVolume = (height * width * depth) / 1000000;
   const materialVolume = outerVolume - volume;
   const density = getMaterialDensity(material);
-  const weight = (materialVolume * (material[mat])) / 1000000;
+  const weight = (materialVolume * (density)) / 1000000;
 
 
   document.getElementById('results').innerHTML = `
