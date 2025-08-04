@@ -1,5 +1,3 @@
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-
 
 // Materialdensiteter i kg/m³
 const materialDensities = {
@@ -73,7 +71,7 @@ function initThreeScene(width, height, depth) {
   scene.add(box);
 
   // Kontroller (rota, zooma)
-  const controls = new OrbitControls(camera, renderer.domElement);
+  const controls = new THREE.OrbitControls(camera, renderer.domElement);
   controls.enableDamping = true;
   controls.dampingFactor = 0.1;
 
