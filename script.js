@@ -1,3 +1,5 @@
+// script.js
+
 function showSection(section) {
   document.getElementById("standardSection").classList.add("hidden");
   document.getElementById("hornSection").classList.add("hidden");
@@ -100,7 +102,6 @@ function drawHorn() {
   const materialVol = ((h * w * d - (h - 2 * wall) * (w - 2 * wall) * (d - 2 * wall)) / 1_000_000).toFixed(1);
   const weight = (materialVol * materialDensities[mat]).toFixed(1);
 
-  // Räkna längden per veck (för visualisering)
   const foldH = (canvas.height - 40) / folds;
   const margin = 20;
 
@@ -116,7 +117,6 @@ function drawHorn() {
   ctx.lineWidth = 2;
   ctx.stroke();
 
-  // Markera hörnen med färgade cirklar (blå = låg tryck, röd = hög tryck hypotetiskt)
   for (let i = 0; i <= folds; i++) {
     const x = i % 2 === 0 ? margin : canvas.width - margin;
     const y = margin + i * foldH;
@@ -126,7 +126,6 @@ function drawHorn() {
     ctx.fill();
   }
 
-  // Beräkna portarea i cm²
   const portArea = Math.PI * Math.pow(portD / 2, 2) / 100;
 
   document.getElementById("hornRange").innerText = `Frekvensomfång: ${simulateHornResponse(L)}`;
@@ -151,14 +150,12 @@ function drawPressureCurve() {
   const samples = 100;
   const pressure = [];
 
-  // Simulera stående vågtryck som sinus mellan 0 och 1
   for (let i = 0; i <= samples; i++) {
     const x = i / samples;
     const standingWave = Math.sin(Math.PI * x);
     pressure.push(standingWave);
   }
 
-  // Rita axlar
   ctx.beginPath();
   ctx.moveTo(40, 10);
   ctx.lineTo(40, canvas.height - 30);
@@ -167,7 +164,6 @@ function drawPressureCurve() {
   ctx.lineWidth = 1;
   ctx.stroke();
 
-  // Rita tryckkurva
   ctx.beginPath();
   for (let i = 0; i <= samples; i++) {
     const x = 40 + i * ((canvas.width - 60) / samples);
@@ -179,7 +175,6 @@ function drawPressureCurve() {
   ctx.lineWidth = 2;
   ctx.stroke();
 
-  // Etiketter
   ctx.fillStyle = "#000";
   ctx.font = "12px sans-serif";
   ctx.fillText("0", 30, canvas.height - 25);
