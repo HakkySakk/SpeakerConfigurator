@@ -117,6 +117,7 @@ function drawHorn() {
 
   const foldH = (canvas.height - 40) / folds;
   const margin = 20;
+  drawPressureCurve();
 
   // Rita hornets väg
   ctx.beginPath();
