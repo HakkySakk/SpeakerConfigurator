@@ -357,14 +357,13 @@
       ctx.fillText(`Hornets längd: ${hornLength} mm`, 10, 40);
 
       // Visa hornets dimensioner i text
-      const details = document.getElementById('hornDetails');
-      details.innerHTML = `
-        <p>Dimensioner (HxBxD): ${height} x ${width} x ${depth} mm</p>
-        <p>Väggtjocklek: ${wall} mm</p>
-        <p>Antal veck: ${folds}</p>
-        <p>Hornets längd: ${hornLength} mm</p>
-      `;
-    }
+      const details = document.getElementById('hornDetails').innerHTML = `
+  <p>Dimensioner (HxBxD): ${height} x ${width} x ${depth} mm</p>
+  <p>Väggtjocklek: ${wall} mm</p>
+  <p>Antal veck: ${folds}</p>
+  <p>Hornets längd: ${hornLength} mm</p>
+  <p><strong>Materialvikt:</strong> ${weight.toFixed(2)} kg (${material.toUpperCase()})</p>
+`;
 
     // Export till PDF - placeholder
     function exportToPDF() {
