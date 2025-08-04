@@ -91,7 +91,7 @@ function drawHorn() {
 
   const innerVolumeM3 = innerHeight * innerWidth * innerDepth;
   const materialVolumeM3 = outerVolumeM3 - innerVolumeM3;
-  const density = getMaterialDensity(material);
+  const density = getMaterialDensity(material) / 1000;
   const weight = materialVolumeM3 * density / 1000000;
 
   document.getElementById('hornDetails').innerHTML = `
