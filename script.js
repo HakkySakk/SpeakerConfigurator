@@ -26,26 +26,20 @@ function simulateStandardResponse(volumeLiters, type, wooferSize) {
 }
 
 function calculateVolume() {
-  const h = parseInt(document.getElementById("height").value);
-  const w = parseInt(document.getElementById("width").value);
-  const d = parseInt(document.getElementById("depth").value);
-  const wall = parseInt(document.getElementById("wallThickness").value);
-  const mat = document.getElementById("materialType").value;
-  const woofer = parseInt(document.getElementById("wooferCount").value);
-  const type = document.getElementById("cabinetType").value;
+  const height = Number(document.getElementById('height').value);
+  const width = Number(document.getElementById('width').value);
+  const depth = Number(document.getElementById('depth').value);
+  const wall = Number(document.getElementById('wallThickness').value);
+  const material = document.getElementById('materialType').value;
 
-  const volume = ((h - 2 * wall) * (w - 2 * wall) * (d - 2 * wall)) / 1_000_000;
-  const materialVol = ((h * w * d - (h - 2 * wall) * (w - 2 * wall) * (d - 2 * wall)) / 1_000_000).toFixed(1);
-  const weight = (materialVol * materialDensities[mat]).toFixed(1);
-  const freq = simulateStandardResponse(volume, type, 30);
+  const innerHeight = height - wall * 2;
+  const innerWidth = width - wall * 2;
+  const innerDepth = depth - wall * 2;
 
-  document.getElementById("results").innerHTML = `
-    <p><strong>Inre volym:</strong> ${volume.toFixed(1)} liter</p>
-    <p><strong>Materialvolym:</strong> ${materialVol} liter</p>
-    <p><strong>Vikt:</strong> ${weight} kg</p>
-    <p><strong>Simulerat frekvensomfång:</strong> ${freq}</p>
-  `;
-}
+  if (innerHeight <= 0 || innerWidth <= 0 || innerDepth <= 0) {
+    alert('Väggtjockleken är för stor för dimensionerna.');
+    return;
+  }
 
 function getMaterialDensity(material) {
   switch (material) {
