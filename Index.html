@@ -3,83 +3,117 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Folded Horn Högtalarkonfigurator</title>
+  <title>Högtalarkabinett-konfigurator</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet" />
   <style>
-    body { font-family: Arial, sans-serif; margin: 20px; }
-    .hidden { display: none; }
-    label { display: block; margin-top: 10px; }
-    input, select { margin-top: 5px; padding: 5px; width: 100%; max-width: 300px; }
-    button { margin-top: 15px; padding: 10px 20px; }
-    canvas { border: 1px solid #ccc; margin-top: 10px; }
-    #hornDetails p { margin: 5px 0; }
+    /* Klistra in hela CSS-koden jag skickade tidigare här */
   </style>
 </head>
 <body>
-  <h1>Folded Horn Högtalarkonfigurator</h1>
+  <nav>
+    <button id="btnStandard" class="active" onclick="switchSection('standard', this)">Standard</button>
+    <button id="btnHorn" onclick="switchSection('horn', this)">Folded Horn</button>
+    <button id="btnPressure" onclick="switchSection('pressure', this)">Lufttryck (Folded Horn)</button>
+  </nav>
 
-  <label>
-    Välj typ:
-    <select id="cabinetType" onchange="showSection(this.value)">
-      <option value="standard">Standard</option>
-      <option value="horn">Folded Horn</option>
-    </select>
-  </label>
-
-  <!-- Standard Section -->
-  <section id="standardSection">
-    <h2>Standard Högtalarlåda</h2>
-
-    <label>Höjd (mm): <input type="number" id="height" value="500" /></label>
-    <label>Bredd (mm): <input type="number" id="width" value="300" /></label>
-    <label>Djup (mm): <input type="number" id="depth" value="300" /></label>
-    <label>Väggtjocklek (mm): <input type="number" id="wallThickness" value="18" /></label>
-    <label>Material:
+  <div class="container">
+    <!-- Standardhögtalare -->
+    <section id="standardSection">
+      <h1>Standardhögtalare</h1>
+      <label for="height">Höjd (mm)</label>
+      <input type="number" id="height" value="400" min="100" max="2000" />
+      <label for="width">Bredd (mm)</label>
+      <input type="number" id="width" value="300" min="100" max="1000" />
+      <label for="depth">Djup (mm)</label>
+      <input type="number" id="depth" value="300" min="100" max="1000" />
+      <label for="wallThickness">Väggtjocklek (mm)</label>
+      <input type="number" id="wallThickness" value="18" min="10" max="50" />
+      <label for="materialType">Material</label>
       <select id="materialType">
-        <option value="mdf">MDF (750 kg/m³)</option>
-        <option value="plywood">Plywood (600 kg/m³)</option>
-        <option value="hdf">HDF (850 kg/m³)</option>
+        <option value="mdf">MDF</option>
+        <option value="plywood">Plywood</option>
+        <option value="hdf">HDF</option>
       </select>
-    </label>
-    <label>Antal högtalarelement: <input type="number" id="wooferCount" value="1" min="1" /></label>
-
-    <button onclick="calculateVolume()">Beräkna</button>
-    <button onclick="exportToPDF()">Exportera till PDF</button>
-
-    <div id="results"></div>
-  </section>
-
-  <!-- Folded Horn Section -->
-  <section id="hornSection" class="hidden">
-    <h2>Folded Horn Högtalarlåda</h2>
-
-    <label>Höjd (mm): <input type="number" id="hornHeight" value="1200" /></label>
-    <label>Bredd (mm): <input type="number" id="hornWidth" value="350" /></label>
-    <label>Djup (mm): <input type="number" id="hornDepth" value="350" /></label>
-    <label>Väggtjocklek (mm): <input type="number" id="hornWallThickness" value="18" /></label>
-    <label>Material:
-      <select id="hornMaterialType">
-        <option value="mdf">MDF (750 kg/m³)</option>
-        <option value="plywood">Plywood (600 kg/m³)</option>
-        <option value="hdf">HDF (850 kg/m³)</option>
+      <label for="wooferCount">Antal högtalarelement</label>
+      <input type="number" id="wooferCount" value="1" min="1" max="10" />
+      <label for="cabinetType">Typ av låda</label>
+      <select id="cabinetType">
+        <option value="sealed">Sluten</option>
+        <option value="ported">Basreflex</option>
       </select>
-    </label>
+      <button class="primary" onclick="calculateVolume()">Beräkna</button>
+      <button class="primary" onclick="exportToPDF()">Exportera till PDF</button>
+      <div id="results"></div>
+    </section>
 
-    <label>Hornlängd (mm): <input type="number" id="hornLength" value="2400" /></label>
-    <label>Antal folds: <input type="number" id="folds" value="4" min="1" max="10" /></label>
-    <label>Antal högtalarelement: <input type="number" id="wooferCountHorn" value="1" min="1" /></label>
-    <label>Basreflexport diameter (mm): <input type="number" id="portDiameter" value="80" /></label>
-    <label>Basreflexport längd (mm): <input type="number" id="portLength" value="150" /></label>
+    <!-- Folded Horn -->
+    <section id="hornSection" class="hidden">
+      <h1>Folded Horn</h1>
+      <div class="form-row">
+        <div>
+          <label for="hornHeight">Höjd (mm)</label>
+          <input type="number" id="hornHeight" value="800" min="100" max="3000" />
+          <label for="hornWidth">Bredd (mm)</label>
+          <input type="number" id="hornWidth" value="400" min="100" max="1500" />
+          <label for="hornDepth">Djup (mm)</label>
+          <input type="number" id="hornDepth" value="400" min="100" max="1500" />
+          <label for="hornWallThickness">Väggtjocklek (mm)</label>
+          <input type="number" id="hornWallThickness" value="18" min="10" max="50" />
+          <label for="hornMaterialType">Material</label>
+          <select id="hornMaterialType">
+            <option value="mdf">MDF</option>
+            <option value="plywood">Plywood</option>
+            <option value="hdf">HDF</option>
+          </select>
+        </div>
+        <div>
+          <label for="wooferCountHorn">Antal högtalarelement</label>
+          <input type="number" id="wooferCountHorn" value="1" min="1" max="10" />
+          <label for="hornLength">Hornlängd (mm)</label>
+          <input type="number" id="hornLength" value="1200" min="200" max="5000" />
+          <label for="folds">Antal veck</label>
+          <input type="number" id="folds" value="4" min="1" max="10" />
+          <label for="portDiameter">Basreflexport diameter (mm)</label>
+          <input type="number" id="portDiameter" value="80" min="20" max="300" />
+          <label for="portLength">Basreflexport längd (mm)</label>
+          <input type="number" id="portLength" value="150" min="20" max="500" />
+        </div>
+      </div>
+      <button class="primary" onclick="drawHorn()">Visa & beräkna</button>
+      <button class="primary" onclick="exportHornToPDF()">Exportera till PDF</button>
+      <div id="hornDetails"></div>
+      <canvas id="hornCanvas" width="500" height="300"></canvas>
+    </section>
 
-    <button onclick="drawHorn()">Uppdatera visualisering</button>
-
-    <canvas id="hornCanvas" width="400" height="300"></canvas>
-    <div id="hornDetails"></div>
-
-    <h3>Lufttryck längs hornet</h3>
-    <canvas id="pressureCanvas" width="400" height="150"></canvas>
-  </section>
+    <!-- Lufttryck visualisering -->
+    <section id="pressureSection" class="hidden">
+      <h1>Lufttryck i Folded Horn</h1>
+      <canvas id="pressureCanvas" width="600" height="200"></canvas>
+    </section>
+  </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="script.js"></script>
+  <script>
+    // Menyknappar och sektion switch
+    function switchSection(section, btn) {
+      document.querySelectorAll("nav button").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+
+      document.getElementById("standardSection").classList.add("hidden");
+      document.getElementById("hornSection").classList.add("hidden");
+      document.getElementById("pressureSection").classList.add("hidden");
+
+      if (section === "standard") {
+        document.getElementById("standardSection").classList.remove("hidden");
+      } else if (section === "horn") {
+        document.getElementById("hornSection").classList.remove("hidden");
+        drawHorn();
+      } else if (section === "pressure") {
+        document.getElementById("pressureSection").classList.remove("hidden");
+        drawPressureCurve();
+      }
+    }
+  </script>
 </body>
 </html>
