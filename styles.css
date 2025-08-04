@@ -1,34 +1,152 @@
+/* Material Design - Grundinställningar */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap');
+
 body {
-  font-family: sans-serif;
-  background: #f5f5f5;
+  font-family: 'Roboto', sans-serif;
+  background-color: #FAFAFA;
   margin: 0;
-  padding: 0;
+  padding: 20px;
+  color: #212121;
 }
 
+h1, h2, h3 {
+  font-weight: 500;
+  color: #212121;
+  margin-bottom: 16px;
+}
+
+.container {
+  max-width: 960px;
+  margin: auto;
+  background: #fff;
+  padding: 24px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  border-radius: 8px;
+}
+
+/* Meny */
 nav {
-  background: #222;
-  padding: 10px;
   display: flex;
-  gap: 10px;
+  background-color: #6200EE;
+  color: white;
+  padding: 12px 24px;
+  border-radius: 8px;
+  margin-bottom: 24px;
+  box-shadow: 0 3px 6px rgba(98,0,238,0.3);
 }
 
 nav button {
-  color: white;
-  background: #444;
+  background: transparent;
   border: none;
-  padding: 10px;
+  color: white;
+  font-weight: 500;
+  font-size: 16px;
+  margin-right: 24px;
   cursor: pointer;
+  padding: 8px 12px;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
 }
 
-main {
-  padding: 20px;
+nav button:hover, nav button.active {
+  background-color: rgba(255,255,255,0.2);
 }
 
+/* Formulärfält */
+label {
+  display: block;
+  font-weight: 500;
+  margin-bottom: 6px;
+  color: #444;
+}
+
+input[type="number"],
+select {
+  width: 100%;
+  padding: 10px 14px;
+  font-size: 16px;
+  border: 1.5px solid #ccc;
+  border-radius: 6px;
+  transition: border-color 0.3s ease;
+  box-sizing: border-box;
+  margin-bottom: 18px;
+}
+
+input[type="number"]:focus,
+select:focus {
+  border-color: #6200EE;
+  outline: none;
+  box-shadow: 0 0 4px #BB86FC;
+}
+
+/* Knappar */
+button.primary {
+  background-color: #6200EE;
+  color: white;
+  font-weight: 500;
+  font-size: 16px;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  box-shadow: 0 3px 6px rgba(98,0,238,0.4);
+  transition: background-color 0.3s ease;
+  margin-top: 12px;
+}
+
+button.primary:hover {
+  background-color: #3700B3;
+}
+
+/* Resultatsektion */
+#results, #hornDetails {
+  background: #F1F1F1;
+  padding: 16px;
+  border-radius: 6px;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+  margin-top: 20px;
+  color: #333;
+}
+
+/* Canvas */
+canvas {
+  border: 1px solid #CCC;
+  border-radius: 8px;
+  background-color: #fff;
+  margin-top: 16px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+/* Dölj element */
 .hidden {
   display: none;
 }
 
-canvas {
-  margin-top: 20px;
-  border: 1px solid #333;
+/* Layout - två kolumner i folded horn-sektionen */
+#hornSection .form-row {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+#hornSection .form-row > div {
+  flex: 1 1 250px;
+}
+
+/* Responsiv justering */
+@media (max-width: 600px) {
+  nav {
+    flex-direction: column;
+  }
+  nav button {
+    margin-right: 0;
+    margin-bottom: 10px;
+  }
+
+  #hornSection .form-row {
+    flex-direction: column;
+  }
 }
