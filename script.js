@@ -17,10 +17,10 @@ function drawHorn() {
   const folds = parseInt(document.getElementById("folds").value);
 
   // 2. Beräkna volymer
-  const outerVolume = (height * width * depth) / 1000000; // m³
-  const innerVolume = ((height - 2 * wall) * (width - 2 * wall) * (depth - 2 * wall)) / 1000000; // m³
-  const materialVolume = outerVolume - innerVolume;
-  const weight = (materialVolume * materialDensities) / 1000000; // kg
+  const outerVolume = (height * width * depth) / 1_000_000; // m³
+  const innerVolume = ((height - 2 * wall) * (width - 2 * wall) * (depth - 2 * wall)) / 1_000_000; // m³
+  const materialVolume = outerVolume - innerVolume; // m³
+  const weight = materialVolume * materialDensities[material]; // kg
 
   // 3. Frekvensomfång
   const L = hornLength / 1000; // i meter
