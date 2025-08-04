@@ -307,8 +307,10 @@
 
       const volume = (innerHeight * innerWidth * innerDepth) / 1000000; // i liter
 
-      const resultDiv = document.getElementById('results');
-      resultDiv.textContent = `Inre volym: ${volume.toFixed(2)} liter`;
+      const resultDiv = document.getElementById("results").innerHTML = `
+  <p><strong>Inre volym:</strong> ${volume.toFixed(2)} liter</p>
+  <p><strong>Materialvikt:</strong> ${weight.toFixed(2)} kg (${material.toUpperCase()})</p>
+`;
     }
 
     // Folded horn visualisering
