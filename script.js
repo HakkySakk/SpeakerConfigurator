@@ -20,7 +20,7 @@ function drawHorn() {
   const outerVolume = (height * width * depth) / 1_000_000; // m³
   const innerVolume = ((height - 2 * wall) * (width - 2 * wall) * (depth - 2 * wall)) / 1_000_000; // m³
   const materialVolume = outerVolume - innerVolume;
-  const weight = (materialVolume / 1000 * materialDensities[mat]).toFixed(1); // kg
+  const weight = (materialVolume / 1000) * materialDensities; // kg
 
 
 
