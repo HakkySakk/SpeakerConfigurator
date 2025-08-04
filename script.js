@@ -87,26 +87,31 @@ function drawHorn() {
 
   const L = parseInt(document.getElementById("hornLength").value);
   const folds = parseInt(document.getElementById("folds").value);
-  const foldW = canvas.width / folds;
+  const foldH = (canvas.height - 40) / folds;
   const margin = 20;
 
   ctx.beginPath();
   ctx.moveTo(margin, margin);
+
   for (let i = 0; i < folds; i++) {
-    const x = (i + 1) * foldW;
-    const y = i % 2 === 0 ? canvas.height - margin : margin;
+    const x = i % 2 === 0 ? canvas.width - margin : margin;
+    const y = margin + (i + 1) * foldH;
     ctx.lineTo(x, y);
   }
+  ctx.strokeStyle = "#444";
+  ctx.lineWidth = 2;
   ctx.stroke();
 
+  // Lufttryck: blå (högt) och röd (lågt)
   for (let i = 0; i <= folds; i++) {
-    const x = i * foldW + margin;
-    const y = i % 2 === 0 ? margin : canvas.height - margin;
+    const x = i % 2 === 0 ? margin : canvas.width - margin;
+    const y = margin + i * foldH;
     ctx.beginPath();
-    ctx.arc(x, y, 5, 0, 2 * Math.PI);
+    ctx.arc(x, y, 6, 0, 2 * Math.PI);
     ctx.fillStyle = i % 2 === 0 ? '#007BFF' : '#FF0000';
     ctx.fill();
   }
 
-  document.getElementById("hornRange").innerText = `Frekvensomfång: ${simulateHornResponse(L)}`;
+  document.getElementById("hornRange").innerText =
+    `Frekvensomfång: ${simulateHornResponse(L)}`;
 }
