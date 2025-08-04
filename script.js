@@ -205,6 +205,86 @@ function initHorn3DView() {
     fold.rotation.y = (i % 2 === 0) ? 0 : Math.PI;
     scene.add(fold);
   }
+// 3D-rendering av Folded Horn med Three.js
+function renderFoldedHorn3D() {
+  const container = document.getElementById('threeContainer');
+  container.innerHTML = ''; // Töm tidigare innehåll
+
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(0xf0f0f0);
+
+  const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 1, 10000);
+  camera.position.set(800, 600, 1000);
+
+  const renderer = new THREE.WebGLRenderer({ antialias: true });
+  renderer.setSize(container.clientWidth, container.clientHeight);
+  container.appendChild(renderer.domElement);
+
+  const controls = new THREE.OrbitControls(camera, renderer.domElement);
+  controls.enableDamping = true;
+  controls.dampingFactor = 0.1;
+
+  // Ljussättning
+  const light = new THREE.DirectionalLight(0xffffff, 1);
+  light.position.set(1, 1, 1);
+  scene.add(light);
+  const ambient = new THREE.AmbientLight(0x404040);
+  scene.add(ambient);
+
+  // Hämta dimensioner från input
+  const height = parseFloat(document.getElementById('hornHeight').value);
+  const width = parseFloat(document.getElementById('hornWidth').value);
+  const depth = parseFloat(document.getElementById('hornDepth').value);
+  const wallThickness = parseFloat(document.getElementById('hornWallThickness').value);
+  const folds = parseInt(document.getElementById('folds').value);
+
+  const hornLength = parseFloat(document.getElementById('hornLength').value);
+  const foldHeight = height / (folds * 2);
+  const gap = wallThickness * 1.5;
+  let x = -width / 2 + gap;
+  let y = height / 2 - foldHeight / 2;
+  let direction = 1;
+
+  // Rita hornets väggar som boxar
+  for (let i = 0; i < folds; i++) {
+    const geometry = new THREE.BoxGeometry(depth - gap * 2, wallThickness, foldHeight);
+    const material = new THREE.MeshLambertMaterial({ color: 0xaaaaaa });
+    const wall = new THREE.Mesh(geometry, material);
+    wall.position.set(x, y, 0);
+    scene.add(wall);
+
+    x += direction * (width - gap * 2 - wallThickness);
+    y -= foldHeight;
+    direction *= -1;
+  }
+
+  // Kabinettets utsida
+  const outerGeometry = new THREE.BoxGeometry(width, wallThickness, depth);
+  const outerMaterial = new THREE.MeshLambertMaterial({ color: 0x444444 });
+  const top = new THREE.Mesh(outerGeometry, outerMaterial);
+  top.position.y = height / 2;
+  scene.add(top);
+
+  const bottom = new THREE.Mesh(outerGeometry, outerMaterial);
+  bottom.position.y = -height / 2;
+  scene.add(bottom);
+
+  // Animate
+  function animate() {
+    requestAnimationFrame(animate);
+    controls.update();
+    renderer.render(scene, camera);
+  }
+
+  animate();
+}
+
+// Koppla till knappen i hornSection
+function drawHorn() {
+  renderHorn2D(); // tidigare 2D-canvas
+  renderFoldedHorn3D(); // ny 3D-rendering
+  calculateHorn(); // uppdatera info
+}
 
   function animate() {
     requestAnimationFrame(animate);
