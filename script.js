@@ -21,7 +21,7 @@ function drawHorn() {
   const outerVolume = (height * width * depth) / 1_000_000; // m³
   const innerVolume = ((height - 2 * wall) * (width - 2 * wall) * (depth - 2 * wall)) / 1_000_000; // m³
   const materialVolume = outerVolume - innerVolume; // m³
-  const weight = materialVolume * materialDensities[material]; // kg
+  const weight = materialVolume * material; // kg
 
   // 3. Frekvensomfång
   const L = hornLength / 1000; // i meter
