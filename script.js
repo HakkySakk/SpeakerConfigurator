@@ -48,7 +48,73 @@ function calculateVolume() {
   `;
 }
 
+function initHorn3DView() {
+  const container = document.getElementById("threeDContainer");
+  container.innerHTML = "";
+
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(0xf2f2f2);
+
+  const camera = new THREE.PerspectiveCamera(45, container.clientWidth / 500, 0.1, 1000);
+  camera.position.set(0, 100, 200);
+
+  const renderer = new THREE.WebGLRenderer({ antialias: true });
+  renderer.setSize(container.clientWidth, 500);
+  container.appendChild(renderer.domElement);
+
+  const controls = new THREE.OrbitControls(camera, renderer.domElement);
+  controls.enableDamping = true;
+
+  const light = new THREE.HemisphereLight(0xffffff, 0x444444);
+  light.position.set(0, 200, 0);
+  scene.add(light);
+
+  const h = parseInt(document.getElementById("hornHeight").value);
+  const w = parseInt(document.getElementById("hornWidth").value);
+  const d = parseInt(document.getElementById("hornDepth").value);
+  const wall = parseInt(document.getElementById("hornWallThickness").value);
+  const folds = parseInt(document.getElementById("folds").value);
+
+  const hornMaterial = new THREE.MeshStandardMaterial({ color: 0xaaaaaa, metalness: 0.1, roughness: 0.8 });
+
+  const wallGeometry = new THREE.BoxGeometry(w, wall, d);
+  const topWall = new THREE.Mesh(wallGeometry, hornMaterial);
+  topWall.position.set(0, h / 2, 0);
+  scene.add(topWall);
+
+  const bottomWall = topWall.clone();
+  bottomWall.position.y = -h / 2;
+  scene.add(bottomWall);
+
+  const sideWallGeometry = new THREE.BoxGeometry(wall, h, d);
+  const leftWall = new THREE.Mesh(sideWallGeometry, hornMaterial);
+  leftWall.position.set(-w / 2, 0, 0);
+  scene.add(leftWall);
+
+  const rightWall = leftWall.clone();
+  rightWall.position.x = w / 2;
+  scene.add(rightWall);
+
+  const foldSpacing = h / (folds + 1);
+  for (let i = 0; i < folds; i++) {
+    const path = new THREE.BoxGeometry(w - 2 * wall, wall, d - 2 * wall);
+    const fold = new THREE.Mesh(path, new THREE.MeshStandardMaterial({ color: 0x6666ff }));
+    fold.position.set(0, h / 2 - (i + 1) * foldSpacing, 0);
+    fold.rotation.y = (i % 2 === 0) ? 0 : Math.PI;
+    scene.add(fold);
+  }
+
+  function animate() {
+    requestAnimationFrame(animate);
+    controls.update();
+    renderer.render(scene, camera);
+  }
+
+  animate();
+}
+
 function drawHorn() {
+  initHorn3DView();
   const canvas = document.getElementById('hornCanvas');
   const ctx = canvas.getContext('2d');
 
