@@ -40,10 +40,9 @@ function calculateVolume() {
   const outerVolume = (height * width * depth) / 1000000;
   const materialVolume = outerVolume - volume;
   const density = getMaterialDensity(material);
-  const weight = (materialVolume * (density)) / 1000000;
+  const weight = materialVolume * density;
 
-
-const resultDiv = document.getElementById('results').innerHTML = `
+  document.getElementById('results').innerHTML = `
     <p><strong>Inre volym:</strong> ${volume.toFixed(2)} liter</p>
     <p><strong>Materialvikt:</strong> ${weight.toFixed(2)} kg (${material.toUpperCase()})</p>
   `;
@@ -84,7 +83,7 @@ function drawHorn() {
   ctx.fillText(`Antal veck: ${folds}`, 10, 20);
   ctx.fillText(`Hornets längd: ${hornLength} mm`, 10, 40);
 
-  const outerVolumeM3 = (height / 1000000) * (width / 1000000) * (depth / 1000000);
+  const outerVolumeM3 = (height / 1000) * (width / 1000) * (depth / 1000);
   const innerHeight = (height - wall * 2) / 1000;
   const innerWidth = (width - wall * 2) / 1000;
   const innerDepth = hornLength / 1000;
@@ -92,10 +91,9 @@ function drawHorn() {
   const innerVolumeM3 = innerHeight * innerWidth * innerDepth;
   const materialVolumeM3 = outerVolumeM3 - innerVolumeM3;
   const density = getMaterialDensity(material);
-  const weight = (materialVolumeM3 * (density) / 1000000));
+  const weight = materialVolumeM3 * density;
 
-
-  const resultDiv = document.getElementById('hornDetails').innerHTML = `
+  document.getElementById('hornDetails').innerHTML = `
     <p>Dimensioner (HxBxD): ${height} x ${width} x ${depth} mm</p>
     <p>Väggtjocklek: ${wall} mm</p>
     <p>Antal veck: ${folds}</p>
