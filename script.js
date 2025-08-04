@@ -25,22 +25,6 @@ function simulateStandardResponse(volumeLiters, type, wooferSize) {
   return `~${low} Hz – ${high} Hz`;
 }
 
-function calculateVolume() {
-  const height = Number(document.getElementById('height').value);
-  const width = Number(document.getElementById('width').value);
-  const depth = Number(document.getElementById('depth').value);
-  const wall = Number(document.getElementById('wallThickness').value);
-  const material = document.getElementById('materialType').value;
-
-  const innerHeight = height - wall * 2;
-  const innerWidth = width - wall * 2;
-  const innerDepth = depth - wall * 2;
-
-  if (innerHeight <= 0 || innerWidth <= 0 || innerDepth <= 0) {
-    alert('Väggtjockleken är för stor för dimensionerna.');
-    return;
-  }
-
 function getMaterialDensity(material) {
   switch (material) {
     case 'mdf': return 700;
