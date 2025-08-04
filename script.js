@@ -32,10 +32,9 @@ function calculateVolume() {
   const woofer = parseInt(document.getElementById("wooferCount").value);
   const type = document.getElementById("cabinetType").value;
 
-  // ✅ Korrigerad volymberäkning (från mm³ till liter)
   const volume = ((h - 2 * wall) * (w - 2 * wall) * (d - 2 * wall)) / 1_000_000;
   const materialVol = ((h * w * d - (h - 2 * wall) * (w - 2 * wall) * (d - 2 * wall)) / 1_000_000).toFixed(1);
-  const weight = (materialVol * materialDensities[mat]).toFixed(1); // i kg
+  const weight = (materialVol * materialDensities[mat]).toFixed(1);
   const freq = simulateStandardResponse(volume, type, 30);
 
   document.getElementById("results").innerHTML = `
@@ -80,26 +79,12 @@ function simulateHornResponse(hornLengthMm) {
   return `~${f1} Hz – ${f1 * 5} Hz`;
 }
 
-function updateHornInfo() {
-  const woofers = parseInt(document.getElementById("wooferCountHorn").value);
-  const portD = parseInt(document.getElementById("portDiameter").value);
-  const portL = parseInt(document.getElementById("portLength").value);
-
-  const portArea = Math.PI * Math.pow(portD / 2, 2) / 100; // cm²
-  const portInfo = `Portyta: ${portArea.toFixed(1)} cm², Längd: ${portL} mm`;
-
-  document.getElementById("hornDetails").innerHTML = `
-    <p><strong>Element:</strong> ${woofers} st</p>
-    <p><strong>Basreflexport:</strong> ${portInfo}</p>
-  `;
-}
-
 function drawHorn() {
   const canvas = document.getElementById("hornCanvas");
   const ctx = canvas.getContext("2d");
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  const L = parseInt(document.getElementById("hornLength").value); // i mm
+  const L = parseInt(document.getElementById("hornLength").value);
   const folds = parseInt(document.getElementById("folds").value);
   const wooferCount = parseInt(document.getElementById("wooferCountHorn").value);
   const portD = parseInt(document.getElementById("portDiameter").value);
@@ -115,13 +100,13 @@ function drawHorn() {
   const materialVol = ((h * w * d - (h - 2 * wall) * (w - 2 * wall) * (d - 2 * wall)) / 1_000_000).toFixed(1);
   const weight = (materialVol * materialDensities[mat]).toFixed(1);
 
+  // Räkna längden per veck (för visualisering)
   const foldH = (canvas.height - 40) / folds;
   const margin = 20;
-  drawPressureCurve();
 
-  // Rita hornets väg
   ctx.beginPath();
   ctx.moveTo(margin, margin);
+
   for (let i = 0; i < folds; i++) {
     const x = i % 2 === 0 ? canvas.width - margin : margin;
     const y = margin + (i + 1) * foldH;
@@ -131,44 +116,7 @@ function drawHorn() {
   ctx.lineWidth = 2;
   ctx.stroke();
 
-  // Rita trycknoder och bukar
-  const f1 = simulateHornResponseFrequency(L);
-  const lambda = 343 / f1; // våglängd i meter
-  const hornLengthM = L / 1000;
-
-  const totalPoints = 100;
-  const points = [];
-
-  for (let i = 0; i <= totalPoints; i++) {
-    const x = i / totalPoints * canvas.width;
-    const normX = i / totalPoints * hornLengthM;
-    const amplitude = Math.sin((2 * Math.PI * normX) / lambda);
-    const y = canvas.height / 2 - amplitude * 40; // amplituden visualiserad
-
-    points.push({ x, y });
-  }
-
-  // Rita sinuskurva
-  ctx.beginPath();
-  ctx.moveTo(points[0].x, points[0].y);
-  for (let pt of points) {
-    ctx.lineTo(pt.x, pt.y);
-  }
-  ctx.strokeStyle = "rgba(255, 100, 0, 0.8)";
-  ctx.lineWidth = 2;
-  ctx.stroke();
-
-  // Färgzoner för högt/lågt tryck
-  for (let pt of points) {
-    const pressure = (Math.sin((2 * Math.PI * pt.x / canvas.width * hornLengthM) / lambda));
-    const alpha = Math.abs(pressure);
-    ctx.beginPath();
-    ctx.arc(pt.x, canvas.height - 10, 3, 0, 2 * Math.PI);
-    ctx.fillStyle = `rgba(0, 150, 255, ${alpha})`;
-    ctx.fill();
-  }
-
-  // Rita punktmarkeringar i hornets väg
+  // Markera hörnen med färgade cirklar (blå = låg tryck, röd = hög tryck hypotetiskt)
   for (let i = 0; i <= folds; i++) {
     const x = i % 2 === 0 ? margin : canvas.width - margin;
     const y = margin + i * foldH;
@@ -178,6 +126,7 @@ function drawHorn() {
     ctx.fill();
   }
 
+  // Beräkna portarea i cm²
   const portArea = Math.PI * Math.pow(portD / 2, 2) / 100;
 
   document.getElementById("hornRange").innerText = `Frekvensomfång: ${simulateHornResponse(L)}`;
@@ -187,12 +136,53 @@ function drawHorn() {
     <p><strong>Inre volym:</strong> ${volume.toFixed(1)} liter</p>
     <p><strong>Materialvolym:</strong> ${materialVol} liter</p>
     <p><strong>Vikt:</strong> ${weight} kg</p>
-    <p><strong>Grundresonans:</strong> ~${f1} Hz, våglängd: ${lambda.toFixed(2)} m</p>
   `;
+
+  drawPressureCurve();
 }
 
-function simulateHornResponseFrequency(hornLengthMm) {
-  const L = hornLengthMm / 1000;
-  const c = 343;
-  return Math.round(c / (4 * L));
+function drawPressureCurve() {
+  const canvas = document.getElementById("pressureCanvas");
+  const ctx = canvas.getContext("2d");
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  const folds = parseInt(document.getElementById("folds").value);
+  const hornLength = parseInt(document.getElementById("hornLength").value);
+  const samples = 100;
+  const pressure = [];
+
+  // Simulera stående vågtryck som sinus mellan 0 och 1
+  for (let i = 0; i <= samples; i++) {
+    const x = i / samples;
+    const standingWave = Math.sin(Math.PI * x);
+    pressure.push(standingWave);
+  }
+
+  // Rita axlar
+  ctx.beginPath();
+  ctx.moveTo(40, 10);
+  ctx.lineTo(40, canvas.height - 30);
+  ctx.lineTo(canvas.width - 10, canvas.height - 30);
+  ctx.strokeStyle = "#999";
+  ctx.lineWidth = 1;
+  ctx.stroke();
+
+  // Rita tryckkurva
+  ctx.beginPath();
+  for (let i = 0; i <= samples; i++) {
+    const x = 40 + i * ((canvas.width - 60) / samples);
+    const y = canvas.height - 30 - pressure[i] * (canvas.height - 60);
+    if (i === 0) ctx.moveTo(x, y);
+    else ctx.lineTo(x, y);
+  }
+  ctx.strokeStyle = "#FF6600";
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  // Etiketter
+  ctx.fillStyle = "#000";
+  ctx.font = "12px sans-serif";
+  ctx.fillText("0", 30, canvas.height - 25);
+  ctx.fillText("Hornlängd (mm)", canvas.width / 2 - 30, canvas.height - 10);
+  ctx.fillText("Lufttryck", 5, 20);
 }
