@@ -80,6 +80,20 @@ function simulateHornResponse(hornLengthMm) {
   return `~${f1} Hz – ${f1 * 5} Hz`;
 }
 
+function updateHornInfo() {
+  const woofers = parseInt(document.getElementById("wooferCountHorn").value);
+  const portD = parseInt(document.getElementById("portDiameter").value);
+  const portL = parseInt(document.getElementById("portLength").value);
+
+  const portArea = Math.PI * Math.pow(portD / 2, 2) / 100; // cm²
+  const portInfo = `Portyta: ${portArea.toFixed(1)} cm², Längd: ${portL} mm`;
+
+  document.getElementById("hornDetails").innerHTML = `
+    <p><strong>Element:</strong> ${woofers} st</p>
+    <p><strong>Basreflexport:</strong> ${portInfo}</p>
+  `;
+}
+
 function drawHorn() {
   const canvas = document.getElementById("hornCanvas");
   const ctx = canvas.getContext("2d");
