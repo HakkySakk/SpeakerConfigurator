@@ -1,73 +1,56 @@
-// Materialdensiteter i kg/m³
-const materialDensities = {
-  mdf: 750,
-  plywood: 600,
-  hdf: 850
-};
+// script.js
 
-function drawHorn() {
-  const height = parseInt(document.getElementById("hornHeight").value);
-  const width = parseInt(document.getElementById("hornWidth").value);
-  const depth = parseInt(document.getElementById("hornDepth").value);
-  const wall = parseInt(document.getElementById("hornWallThickness").value);
-  const material = document.getElementById("hornMaterialType").value;
-  const wooferCount = parseInt(document.getElementById("wooferCountHorn").value);
-  const hornLength = parseInt(document.getElementById("hornLength").value);
-  const folds = parseInt(document.getElementById("folds").value);
+const canvas = document.getElementById("hornCanvas");
+const ctx = canvas.getContext("2d");
 
-  const outerVolume = (height * width * depth) / 1_000_000;
-  const innerVolume = ((height - 2 * wall) * (width - 2 * wall) * (depth - 2 * wall)) / 1_000_000;
-  const materialVolume = outerVolume - innerVolume;
-  const materialDensity = materialDensities[material];
-  const weight = (materialVolume * materialDensity).toFixed(1);
-
-  const L = hornLength / 1000;
-  const c = 343;
-  const f1 = Math.round(c / (4 * L));
-  const freqRange = `~${f1} Hz – ${f1 * 5} Hz`;
-
-  document.getElementById("hornDetails").innerHTML = `
-    <p><strong>Inre volym:</strong> ${(innerVolume * 1000).toFixed(1)} liter</p>
-    <p><strong>Materialvolym:</strong> ${(materialVolume * 1000).toFixed(1)} liter</p>
-    <p><strong>Vikt:</strong> ${weight} kg</p>
-    <p><strong>Frekvensomfång:</strong> ${freqRange}</p>
-    <p><strong>Element:</strong> ${wooferCount} st</p>
-    <p><strong>Hornlängd:</strong> ${hornLength} mm (${folds} veck)</p>
-  `;
-
-  draw2DVisual(width, height, depth, wall, folds);
+function calculateMaterialWeight(width, height, depth, thickness) {
+  const mm3ToM3 = 1e-9;
+  const outerVolume = width * height * depth;
+  const innerVolume = (width - 2 * thickness) * (height - 2 * thickness) * (depth - 2 * thickness);
+  const panelVolume = (outerVolume - innerVolume) * mm3ToM3;
+  const plywoodDensity = 700; // kg/m³
+  return panelVolume * plywoodDensity;
 }
 
-function draw2DVisual(width, height, depth, wall, folds) {
-  const canvas = document.getElementById("canvas2D");
-  const ctx = canvas.getContext("2d");
+function updateVisualization() {
+  const width = parseInt(document.getElementById("width").value);
+  const height = parseInt(document.getElementById("height").value);
+  const depth = parseInt(document.getElementById("depth").value);
+  const thickness = parseInt(document.getElementById("thickness").value);
+
+  // Rensa canvas
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+  // Skalning
   const scale = 0.5;
-  const w = width * scale;
-  const h = height * scale;
-  const d = depth * scale;
-  const margin = 40;
+  const x = 50;
+  const y = 50;
 
-  ctx.strokeStyle = "#333";
-  ctx.lineWidth = 2;
-  ctx.strokeRect(margin, margin, w, h);
+  // Rita yttermått
+  ctx.fillStyle = "#ddd";
+  ctx.fillRect(x, y, width * scale, height * scale);
 
-  ctx.fillStyle = "#ccc";
-  ctx.fillRect(margin + wall * scale, margin + wall * scale, w - 2 * wall * scale, h - 2 * wall * scale);
+  // Rita inre volym
+  ctx.fillStyle = "#fff";
+  ctx.fillRect(x + thickness * scale, y + thickness * scale, (width - 2 * thickness) * scale, (height - 2 * thickness) * scale);
 
-  const foldHeight = h / (folds + 1);
-  ctx.strokeStyle = "blue";
-  for (let i = 1; i <= folds; i++) {
-    let y = margin + i * foldHeight;
-    ctx.beginPath();
-    ctx.moveTo(margin, y);
-    ctx.lineTo(margin + w, y);
-    ctx.stroke();
-  }
+  // Rita måttlinjer
+  ctx.strokeStyle = "#000";
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(x, y + height * scale + 10);
+  ctx.lineTo(x + width * scale, y + height * scale + 10);
+  ctx.stroke();
 
-  ctx.fillStyle = "black";
-  ctx.font = "12px sans-serif";
-  ctx.fillText(`Bredd: ${width} mm`, margin, margin + h + 15);
-  ctx.fillText(`Höjd: ${height} mm`, margin + w + 10, margin + h / 2);
+  ctx.font = "14px Arial";
+  ctx.fillStyle = "#000";
+  ctx.fillText(`Bredd: ${width} mm`, x + width * scale / 2 - 40, y + height * scale + 30);
+  ctx.fillText(`Höjd: ${height} mm`, x + width * scale + 10, y + height * scale / 2);
+
+  // Beräkna och visa vikt
+  const weight = calculateMaterialWeight(width, height, depth, thickness);
+  document.getElementById("materialWeight").textContent = `Beräknad materialvikt: ${weight.toFixed(1)} kg`;
 }
+
+// Kör en första uppdatering
+updateVisualization();
