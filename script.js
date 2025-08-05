@@ -123,11 +123,10 @@ function drawFrontView(width, height, wall, ctx) {
     margin + w, margin + wall * scale + 5,
     `tjocklek ${wall} mm`, 5);
 
-   // Titel
-  ctx.fillStyle = "#1d1d1f";
-  ctx.font = "20px -apple-system, sans-serif";
-  ctx.textAlign = "center";
-  ctx.fillText(title, canvas.width / 2, 30);
+  // Titel
+  ctx.fillStyle = "black";
+  ctx.font = "16px Arial";
+  ctx.fillText("Topvy (Bredd x Djup)", margin, 20);
 }
 
 // Rita sidovy (djup x höjd)
@@ -169,10 +168,9 @@ function drawSideView(depth, height, wall, ctx) {
     `tjocklek ${wall} mm`, 5);
 
    // Titel
-  ctx.fillStyle = "#1d1d1f";
-  ctx.font = "20px -apple-system, sans-serif";
-  ctx.textAlign = "center";
-  ctx.fillText(title, canvas.width / 2, 30);
+  ctx.fillStyle = "black";
+  ctx.font = "16px Arial";
+  ctx.fillText("Topvy (Bredd x Djup)", margin, 20);
 }
 
 // Rita topvy (bredd x djup)
@@ -213,11 +211,10 @@ function drawTopView(width, depth, wall, ctx) {
     margin + w, margin + wall * scale + 5,
     `tjocklek ${wall} mm`, 5);
 
-   // Titel
-  ctx.fillStyle = "#1d1d1f";
-  ctx.font = "20px -apple-system, sans-serif";
-  ctx.textAlign = "center";
-  ctx.fillText(title, canvas.width / 2, 30);
+  // Titel
+  ctx.fillStyle = "black";
+  ctx.font = "16px Arial";
+  ctx.fillText("Topvy (Bredd x Djup)", margin, 20);
 }
 
 // Initiera med att uppdatera visualisering vid sidladdning
