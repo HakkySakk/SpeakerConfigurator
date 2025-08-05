@@ -170,7 +170,7 @@ function drawSideView(depth, height, wall, ctx) {
    // Titel
   ctx.fillStyle = "black";
   ctx.font = "16px Arial";
-  ctx.fillText("Topvy (Bredd x Djup)", margin, 20);
+  ctx.fillText("Topvy (Bredd x Djup)", padding, 20);
 }
 
 // Rita topvy (bredd x djup)
