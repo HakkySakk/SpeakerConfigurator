@@ -126,7 +126,7 @@ function drawFrontView(width, height, wall, ctx) {
   // Titel
   ctx.fillStyle = "black";
   ctx.font = "16px Arial";
-  ctx.fillText("Frontvy (Bredd x Höjd)", margin, 100);
+  ctx.fillText("Frontvy (Bredd x Höjd)", margin, 1);
 }
 
 // Rita sidovy (djup x höjd)
@@ -170,7 +170,7 @@ function drawSideView(depth, height, wall, ctx) {
   // Titel
   ctx.fillStyle = "black";
   ctx.font = "16px Arial";
-  ctx.fillText("Sidovy (Djup x Höjd)", margin, 20);
+  ctx.fillText("Sidovy (Djup x Höjd)", margin, 1);
 }
 
 // Rita topvy (bredd x djup)
@@ -214,7 +214,7 @@ function drawTopView(width, depth, wall, ctx) {
   // Titel
   ctx.fillStyle = "black";
   ctx.font = "16px Arial";
-  ctx.fillText("Topvy (Bredd x Djup)", margin, 20);
+  ctx.fillText("Topvy (Bredd x Djup)", margin, 1);
 }
 
 // Initiera med att uppdatera visualisering vid sidladdning
