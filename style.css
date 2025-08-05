@@ -1,35 +1,102 @@
+/* Grundläggande typografi */
 body {
-  font-family: system-ui, sans-serif;
-  background: #f8f8f8;
-  padding: 2rem;
-  color: #111;
+  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  color: #1d1d1f;
+  background-color: #ffffff;
+  margin: 0;
+  padding: 0;
+  line-height: 1.6;
 }
 
-h1 {
-  font-size: 1.8rem;
-  margin-bottom: 1rem;
+/* Layout */
+.container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 40px 20px;
 }
 
-.input-grid {
-  display: grid;
-  gap: 1rem;
-  max-width: 400px;
+/* Rubriker */
+h1, h2, h3 {
+  font-weight: 600;
+  margin-bottom: 20px;
 }
 
-input, select, button {
-  padding: 0.5rem;
-  font-size: 1rem;
-  width: 100%;
-}
-
+/* Knappar */
 button {
-  background-color: #007aff;
+  background-color: #0071e3;
   color: white;
   border: none;
+  padding: 12px 24px;
+  font-size: 16px;
+  border-radius: 12px;
   cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
+button:hover {
+  background-color: #005bb5;
+}
+
+button:disabled {
+  background-color: #c0c0c0;
+  cursor: not-allowed;
+}
+
+/* Inputs */
+input, select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #d2d2d7;
+  border-radius: 10px;
+  font-size: 16px;
+  margin-bottom: 20px;
+  background-color: #f9f9f9;
+  transition: border 0.2s ease;
+}
+
+input:focus, select:focus {
+  border-color: #0071e3;
+  outline: none;
+}
+
+/* Sektioner */
+section {
+  margin-bottom: 60px;
+}
+
+/* Resultatpanel */
+.result-panel {
+  background-color: #f5f5f7;
+  border-radius: 20px;
+  padding: 30px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+}
+
+/* 2D Canvas */
 #hornCanvas {
-  margin-top: 2rem;
+  width: 100%;
+  height: auto;
+  background-color: #eaeaea;
   border: 1px solid #ccc;
+  border-radius: 12px;
+  margin-top: 20px;
+}
+
+/* Navigation */
+.navbar {
+  background-color: #ffffff;
+  padding: 20px;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);
+}
+
+.navbar h1 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+/* Dölja sektioner */
+.hidden {
+  display: none;
 }
