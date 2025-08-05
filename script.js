@@ -85,14 +85,14 @@ function drawDimensionLine(ctx, x1, y1, x2, y2, label, offset = 10) {
 
 // Rita frontvy (bredd x höjd)
 function drawFrontView(width, height, wall, ctx) {
-  const marginTop = 40;  // Ökat avstånd för titel
-  const padding = 50;    // Sidomarginal
   const cw = ctx.canvas.width;
   const ch = ctx.canvas.height;
   ctx.clearRect(0, 0, cw, ch);
 
   // Skala för att få plats i canvas med marginal
   const margin = 40;
+  const marginTop = 40;  // Ökat avstånd för titel
+  const padding = 50;    // Sidomarginal
   const scaleX = (cw - 2 * margin) / width;
   const scaleY = (ch - 2 * margin) / height;
   const scale = Math.min(scaleX, scaleY);
