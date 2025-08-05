@@ -91,7 +91,7 @@ function drawFrontView(width, height, wall, ctx) {
 
   // Skala för att få plats i canvas med marginal
   const margin = 40;
-  const marginTop = 40;  // Ökat avstånd för titel
+  const marginTop = 80;  // Ökat avstånd för titel
   const padding = 50;    // Sidomarginal
   const scaleX = (cw - 2 * margin) / width;
   const scaleY = (ch - 2 * margin) / height;
