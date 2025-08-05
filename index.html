@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Folded Horn Konfigurator</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>Folded Horn Konfigurator</h1>
+    <div class="form">
+      <label>Bredd (mm): <input type="number" id="widthInput" value="400"></label>
+      <label>Höjd (mm): <input type="number" id="heightInput" value="800"></label>
+      <label>Djup (mm): <input type="number" id="depthInput" value="500"></label>
+      <label>Väggtjocklek (mm): <input type="number" id="wallInput" value="18"></label>
+      <button onclick="updateVisualization()">Uppdatera visualisering</button>
+    </div>
+
+    <div class="output">
+      <canvas id="hornCanvas" width="500" height="500"></canvas>
+      <p id="materialWeight">Materialvikt: –</p>
+    </div>
+  </div>
+  <script src="script.js" defer></script>
+</body>
+</html>
