@@ -85,6 +85,8 @@ function drawDimensionLine(ctx, x1, y1, x2, y2, label, offset = 10) {
 
 // Rita frontvy (bredd x höjd)
 function drawFrontView(width, height, wall, ctx) {
+  const marginTop = 40;  // Ökat avstånd för titel
+  const padding = 50;    // Sidomarginal
   const cw = ctx.canvas.width;
   const ch = ctx.canvas.height;
   ctx.clearRect(0, 0, cw, ch);
@@ -170,7 +172,7 @@ function drawSideView(depth, height, wall, ctx) {
    // Titel
   ctx.fillStyle = "black";
   ctx.font = "16px Arial";
-  ctx.fillText("Topvy (Bredd x Djup)", padding, 20);
+  ctx.fillText("Topvy (Bredd x Djup)", margin, 20);
 }
 
 // Rita topvy (bredd x djup)
