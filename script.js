@@ -1,4 +1,3 @@
-
 // Materialdensiteter i kg/m³
 const materialDensities = {
   mdf: 750,
@@ -7,7 +6,6 @@ const materialDensities = {
 };
 
 function drawHorn() {
-  // 1. Hämta värden
   const height = parseInt(document.getElementById("hornHeight").value);
   const width = parseInt(document.getElementById("hornWidth").value);
   const depth = parseInt(document.getElementById("hornDepth").value);
@@ -17,19 +15,17 @@ function drawHorn() {
   const hornLength = parseInt(document.getElementById("hornLength").value);
   const folds = parseInt(document.getElementById("folds").value);
 
-  // 2. Beräkna volymer
-  const outerVolume = (height * width * depth) / 1_000_000; // m³
-  const innerVolume = ((height - 2 * wall) * (width - 2 * wall) * (depth - 2 * wall)) / 1_000_000; // m³
-  const materialVolume = outerVolume - innerVolume; // m³
-  const weight = materialVolume * material; // kg
+  const outerVolume = (height * width * depth) / 1_000_000;
+  const innerVolume = ((height - 2 * wall) * (width - 2 * wall) * (depth - 2 * wall)) / 1_000_000;
+  const materialVolume = outerVolume - innerVolume;
+  const materialDensity = materialDensities[material];
+  const weight = (materialVolume * materialDensity).toFixed(1);
 
-  // 3. Frekvensomfång
-  const L = hornLength / 1000; // i meter
+  const L = hornLength / 1000;
   const c = 343;
   const f1 = Math.round(c / (4 * L));
   const freqRange = `~${f1} Hz – ${f1 * 5} Hz`;
 
-  // 4. Visa resultat
   document.getElementById("hornDetails").innerHTML = `
     <p><strong>Inre volym:</strong> ${(innerVolume * 1000).toFixed(1)} liter</p>
     <p><strong>Materialvolym:</strong> ${(materialVolume * 1000).toFixed(1)} liter</p>
@@ -39,46 +35,39 @@ function drawHorn() {
     <p><strong>Hornlängd:</strong> ${hornLength} mm (${folds} veck)</p>
   `;
 
-  // 5. Rendera 3D
-  initThreeScene(width, height, depth);
+  draw2DVisual(width, height, depth, wall, folds);
 }
 
-function initThreeScene(width, height, depth) {
-  const container = document.getElementById("threeContainer");
-  container.innerHTML = ""; // Rensa tidigare modell
+function draw2DVisual(width, height, depth, wall, folds) {
+  const canvas = document.getElementById("canvas2D");
+  const ctx = canvas.getContext("2d");
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  // Skapa scen
-  const scene = new THREE.Scene();
-  scene.background = new THREE.Color("#f5f5f5");
+  const scale = 0.5;
+  const w = width * scale;
+  const h = height * scale;
+  const d = depth * scale;
+  const margin = 40;
 
-  const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
-  camera.position.set(1, 1, 3);
+  ctx.strokeStyle = "#333";
+  ctx.lineWidth = 2;
+  ctx.strokeRect(margin, margin, w, h);
 
-  const renderer = new THREE.WebGLRenderer({ antialias: true });
-  renderer.setSize(container.clientWidth, container.clientHeight);
-  container.appendChild(renderer.domElement);
+  ctx.fillStyle = "#ccc";
+  ctx.fillRect(margin + wall * scale, margin + wall * scale, w - 2 * wall * scale, h - 2 * wall * scale);
 
-  // Ljus
-  const light = new THREE.DirectionalLight(0xffffff, 1);
-  light.position.set(1, 1, 1);
-  scene.add(light);
-  scene.add(new THREE.AmbientLight(0xaaaaaa));
-
-  // Skapa låda (högtalare)
-  const geometry = new THREE.BoxGeometry(width / 1000, height / 1000, depth / 1000);
-  const material = new THREE.MeshStandardMaterial({ color: 0x5555ff, transparent: true, opacity: 0.6 });
-  const box = new THREE.Mesh(geometry, material);
-  scene.add(box);
-
-  // Kontroller (rota, zooma)
-  const controls = new THREE.OrbitControls(camera, renderer.domElement);
-  controls.enableDamping = true;
-  controls.dampingFactor = 0.1;
-
-  function animate() {
-    requestAnimationFrame(animate);
-    controls.update();
-    renderer.render(scene, camera);
+  const foldHeight = h / (folds + 1);
+  ctx.strokeStyle = "blue";
+  for (let i = 1; i <= folds; i++) {
+    let y = margin + i * foldHeight;
+    ctx.beginPath();
+    ctx.moveTo(margin, y);
+    ctx.lineTo(margin + w, y);
+    ctx.stroke();
   }
-  animate();
+
+  ctx.fillStyle = "black";
+  ctx.font = "12px sans-serif";
+  ctx.fillText(`Bredd: ${width} mm`, margin, margin + h + 15);
+  ctx.fillText(`Höjd: ${height} mm`, margin + w + 10, margin + h / 2);
 }
