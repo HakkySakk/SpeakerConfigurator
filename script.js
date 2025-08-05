@@ -126,7 +126,7 @@ function drawFrontView(width, height, wall, ctx) {
   // Titel
   ctx.fillStyle = "black";
   ctx.font = "16px Arial";
-  ctx.fillText("Frontvy (Bredd x Höjd)", margin, 1);
+  ctx.fillText("Frontvy (Bredd x Höjd)");
 }
 
 // Rita sidovy (djup x höjd)
