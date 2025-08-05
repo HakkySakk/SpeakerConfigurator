@@ -1,0 +1,39 @@
+
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Folded Horn Konfigurator</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1>Folded Horn Konfigurator</h1>
+  </header>
+
+  <main>
+    <section id="foldedHornSection">
+      <div>
+        <label for="hornWidth">Bredd (mm):</label>
+        <input type="number" id="hornWidth" value="400" />
+        <label for="hornHeight">Höjd (mm):</label>
+        <input type="number" id="hornHeight" value="800" />
+        <label for="hornDepth">Djup (mm):</label>
+        <input type="number" id="hornDepth" value="500" />
+        <label for="hornWallThickness">Väggtjocklek (mm):</label>
+        <input type="number" id="hornWallThickness" value="18" />
+        <button onclick="updateVisualization()">Beräkna & Visualisera</button>
+      </div>
+
+      <div id="hornResult">
+        <p id="materialWeight"></p>
+      </div>
+
+      <canvas id="visualizationCanvas" width="800" height="600"></canvas>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,56 +1,41 @@
+
 // script.js
 
-const canvas = document.getElementById("hornCanvas");
-const ctx = canvas.getContext("2d");
+// Materialdata för viktberäkning
+const plywoodDensity = 700; // kg/m³ (typiskt för björkplywood)
 
 function calculateMaterialWeight(width, height, depth, thickness) {
   const mm3ToM3 = 1e-9;
   const outerVolume = width * height * depth;
   const innerVolume = (width - 2 * thickness) * (height - 2 * thickness) * (depth - 2 * thickness);
-  const panelVolume = (outerVolume - innerVolume) * mm3ToM3;
-  const plywoodDensity = 700; // kg/m³
-  return panelVolume * plywoodDensity;
+  const panelVolume = (outerVolume - innerVolume) * mm3ToM3; // m³
+  return panelVolume * plywoodDensity; // kg
 }
 
 function updateVisualization() {
-  const width = parseInt(document.getElementById("width").value);
-  const height = parseInt(document.getElementById("height").value);
-  const depth = parseInt(document.getElementById("depth").value);
-  const thickness = parseInt(document.getElementById("thickness").value);
+  const width = parseInt(document.getElementById("hornWidth").value);
+  const height = parseInt(document.getElementById("hornHeight").value);
+  const depth = parseInt(document.getElementById("hornDepth").value);
+  const thickness = parseInt(document.getElementById("hornWallThickness").value);
 
-  // Rensa canvas
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-  // Skalning
-  const scale = 0.5;
-  const x = 50;
-  const y = 50;
-
-  // Rita yttermått
-  ctx.fillStyle = "#ddd";
-  ctx.fillRect(x, y, width * scale, height * scale);
-
-  // Rita inre volym
-  ctx.fillStyle = "#fff";
-  ctx.fillRect(x + thickness * scale, y + thickness * scale, (width - 2 * thickness) * scale, (height - 2 * thickness) * scale);
-
-  // Rita måttlinjer
-  ctx.strokeStyle = "#000";
-  ctx.lineWidth = 1;
-  ctx.beginPath();
-  ctx.moveTo(x, y + height * scale + 10);
-  ctx.lineTo(x + width * scale, y + height * scale + 10);
-  ctx.stroke();
-
-  ctx.font = "14px Arial";
-  ctx.fillStyle = "#000";
-  ctx.fillText(`Bredd: ${width} mm`, x + width * scale / 2 - 40, y + height * scale + 30);
-  ctx.fillText(`Höjd: ${height} mm`, x + width * scale + 10, y + height * scale / 2);
-
-  // Beräkna och visa vikt
   const weight = calculateMaterialWeight(width, height, depth, thickness);
-  document.getElementById("materialWeight").textContent = `Beräknad materialvikt: ${weight.toFixed(1)} kg`;
+  document.getElementById("materialWeight").textContent = "Materialvikt: " + weight.toFixed(1) + " kg";
+
+  draw2DBox(width, height, depth, thickness);
 }
 
-// Kör en första uppdatering
-updateVisualization();
+function draw2DBox(width, height, depth, thickness) {
+  const canvas = document.getElementById("visualizationCanvas");
+  const ctx = canvas.getContext("2d");
+
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.strokeStyle = "#333";
+  ctx.lineWidth = 2;
+
+  const scale = 0.5;
+  const x = 100;
+  const y = 100;
+
+  ctx.strokeRect(x, y, width * scale, height * scale);
+  ctx.strokeRect(x + thickness * scale, y + thickness * scale, (width - 2 * thickness) * scale, (height - 2 * thickness) * scale);
+}
