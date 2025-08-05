@@ -2,26 +2,31 @@
 <html lang="sv">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Folded Horn Konfigurator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Folded Horn-konfigurator</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="container">
-    <h1>Folded Horn Konfigurator</h1>
-    <div class="form">
-      <label>Bredd (mm): <input type="number" id="widthInput" value="400"></label>
-      <label>Höjd (mm): <input type="number" id="heightInput" value="800"></label>
-      <label>Djup (mm): <input type="number" id="depthInput" value="500"></label>
-      <label>Väggtjocklek (mm): <input type="number" id="wallInput" value="18"></label>
-      <button onclick="updateVisualization()">Uppdatera visualisering</button>
-    </div>
+  <h1>Folded Horn-konfigurator</h1>
 
-    <div class="output">
-      <canvas id="hornCanvas" width="500" height="500"></canvas>
-      <p id="materialWeight">Materialvikt: –</p>
-    </div>
+  <div class="input-grid">
+    <label>Bredd (mm): <input id="hornWidth" type="number" value="400"></label>
+    <label>Höjd (mm): <input id="hornHeight" type="number" value="800"></label>
+    <label>Djup (mm): <input id="hornDepth" type="number" value="500"></label>
+    <label>Godstjocklek (mm): <input id="hornThickness" type="number" value="18"></label>
+    <label>Material:
+      <select id="hornMaterial">
+        <option value="plywood">Plywood</option>
+        <option value="mdf">MDF</option>
+        <option value="hdf">HDF</option>
+      </select>
+    </label>
+    <button id="calculateBtn">Beräkna & Visa</button>
   </div>
-  <script src="script.js" defer></script>
+
+  <div id="output"></div>
+  <canvas id="hornCanvas" width="500" height="600"></canvas>
+
+  <script src="script.js"></script>
 </body>
 </html>
