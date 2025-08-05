@@ -2,30 +2,54 @@
 <html lang="sv">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Folded Horn-konfigurator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Högtalarkabinett Konfigurator</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <h1>Folded Horn-konfigurator</h1>
 
-  <div class="input-grid">
-    <label>Bredd (mm): <input id="hornWidth" type="number" value="400"></label>
-    <label>Höjd (mm): <input id="hornHeight" type="number" value="800"></label>
-    <label>Djup (mm): <input id="hornDepth" type="number" value="500"></label>
-    <label>Godstjocklek (mm): <input id="hornThickness" type="number" value="18"></label>
-    <label>Material:
-      <select id="hornMaterial">
-        <option value="plywood">Plywood</option>
+  <nav class="navbar">
+    <h1>Högtalarkabinett Konfigurator</h1>
+  </nav>
+
+  <main class="container">
+    <section id="configSection">
+      <h2>Konfigurera Högtalarlåda</h2>
+      
+      <label for="boxWidth">Bredd (mm)</label>
+      <input type="number" id="boxWidth" value="400" min="100" max="2000" />
+
+      <label for="boxHeight">Höjd (mm)</label>
+      <input type="number" id="boxHeight" value="800" min="100" max="2000" />
+
+      <label for="boxDepth">Djup (mm)</label>
+      <input type="number" id="boxDepth" value="500" min="100" max="2000" />
+
+      <label for="wallThickness">Väggtjocklek (mm)</label>
+      <input type="number" id="wallThickness" value="18" min="5" max="50" />
+
+      <label for="materialType">Material</label>
+      <select id="materialType">
         <option value="mdf">MDF</option>
+        <option value="plywood">Plywood</option>
         <option value="hdf">HDF</option>
       </select>
-    </label>
-    <button id="calculateBtn">Beräkna & Visa</button>
-  </div>
 
-  <div id="output"></div>
-  <canvas id="hornCanvas" width="500" height="600"></canvas>
+      <button onclick="updateVisualization()">Uppdatera Visualisering</button>
+    </section>
+
+    <section id="resultSection" class="result-panel">
+      <h2>Beräkningar</h2>
+      <p id="volumeOutput">Inre volym: -- liter</p>
+      <p id="materialVolumeOutput">Materialvolym: -- liter</p>
+      <p id="weightOutput">Materialvikt: -- kg</p>
+    </section>
+
+    <section id="visualizationSection">
+      <h2>2D Visualisering (vridbar)</h2>
+      <canvas id="hornCanvas" width="600" height="400"></canvas>
+    </section>
+  </main>
 
   <script src="script.js"></script>
 </body>
