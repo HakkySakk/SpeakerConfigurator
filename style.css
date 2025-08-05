@@ -1,102 +1,93 @@
-/* Grundläggande typografi */
+/* Grundinställningar */
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 16px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  background-color: #f5f5f7;
   color: #1d1d1f;
-  background-color: #ffffff;
-  margin: 0;
-  padding: 0;
-  line-height: 1.6;
+  margin: 20px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Layout */
-.container {
-  max-width: 960px;
-  margin: 0 auto;
-  padding: 40px 20px;
-}
-
-/* Rubriker */
-h1, h2, h3 {
-  font-weight: 600;
+/* Container för allt */
+div {
   margin-bottom: 20px;
 }
 
-/* Knappar */
+/* Canvas-styling */
+canvas {
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgb(0 0 0 / 0.1);
+  transition: box-shadow 0.3s ease;
+}
+
+canvas:hover {
+  box-shadow: 0 8px 20px rgb(0 0 0 / 0.15);
+}
+
+/* Formulär styling */
+label {
+  display: inline-block;
+  margin-right: 20px;
+  font-weight: 600;
+  font-size: 14px;
+  color: #3c3c4399;
+  user-select: none;
+}
+
+input[type="number"], select {
+  margin-left: 8px;
+  padding: 6px 10px;
+  font-size: 15px;
+  border: 1px solid #d2d2d7;
+  border-radius: 8px;
+  background-color: #fafafa;
+  width: 80px;
+  transition: border-color 0.3s ease;
+}
+
+input[type="number"]:focus, select:focus {
+  outline: none;
+  border-color: #0071e3;
+  background-color: #fff;
+  box-shadow: 0 0 0 3px rgb(0 113 227 / 0.3);
+}
+
+/* Knapp */
 button {
   background-color: #0071e3;
   color: white;
   border: none;
-  padding: 12px 24px;
-  font-size: 16px;
   border-radius: 12px;
+  padding: 10px 20px;
+  font-weight: 700;
+  font-size: 16px;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  user-select: none;
 }
 
 button:hover {
   background-color: #005bb5;
 }
 
-button:disabled {
-  background-color: #c0c0c0;
-  cursor: not-allowed;
+button:active {
+  background-color: #004494;
 }
 
-/* Inputs */
-input, select {
-  width: 100%;
-  padding: 10px 12px;
-  border: 1px solid #d2d2d7;
-  border-radius: 10px;
+/* Output-texter */
+p {
   font-size: 16px;
-  margin-bottom: 20px;
-  background-color: #f9f9f9;
-  transition: border 0.2s ease;
-}
-
-input:focus, select:focus {
-  border-color: #0071e3;
-  outline: none;
-}
-
-/* Sektioner */
-section {
-  margin-bottom: 60px;
-}
-
-/* Resultatpanel */
-.result-panel {
-  background-color: #f5f5f7;
-  border-radius: 20px;
-  padding: 30px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-}
-
-/* 2D Canvas */
-#hornCanvas {
-  width: 100%;
-  height: auto;
-  background-color: #eaeaea;
-  border: 1px solid #ccc;
-  border-radius: 12px;
-  margin-top: 20px;
-}
-
-/* Navigation */
-.navbar {
-  background-color: #ffffff;
-  padding: 20px;
-  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);
-}
-
-.navbar h1 {
-  margin: 0;
-  font-size: 24px;
   font-weight: 600;
+  color: #1d1d1f;
+  margin: 6px 0;
+  user-select: text;
 }
 
-/* Dölja sektioner */
-.hidden {
-  display: none;
+/* Responsiv layout för canvas */
+div > canvas {
+  max-width: 100%;
+  height: auto;
 }
