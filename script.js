@@ -1,48 +1,123 @@
-document.addEventListener("DOMContentLoaded", () => {
-  const densities = {
-    plywood: 700,
-    mdf: 750,
-    hdf: 850
-  };
+// Materialdensiteter i kg/m³
+const materialDensities = {
+  mdf: 750,
+  plywood: 600,
+  hdf: 850
+};
 
-  document.getElementById("calculateBtn").onclick = updateVisualization;
+const canvas = document.getElementById("hornCanvas");
+const ctx = canvas.getContext("2d");
 
-  function updateVisualization() {
-    const width = parseInt(document.getElementById("hornWidth").value);
-    const height = parseInt(document.getElementById("hornHeight").value);
-    const depth = parseInt(document.getElementById("hornDepth").value);
-    const thickness = parseInt(document.getElementById("hornThickness").value);
-    const material = document.getElementById("hornMaterial").value;
+let rotationAngle = 0; // i grader
+let isDragging = false;
+let lastX = 0;
 
-    const outerVolume = width * height * depth;
-    const innerVolume = (width - 2 * thickness) * (height - 2 * thickness) * (depth - 2 * thickness);
-    const panelVolume = (outerVolume - innerVolume) * 1e-9;
-    const weight = panelVolume * densities[material];
+canvas.addEventListener("mousedown", e => {
+  isDragging = true;
+  lastX = e.clientX;
+});
 
-    document.getElementById("output").innerHTML = `
-      <p><strong>Materialvolym:</strong> ${(panelVolume * 1000).toFixed(1)} liter</p>
-      <p><strong>Beräknad vikt:</strong> ${weight.toFixed(1)} kg</p>
-    `;
+canvas.addEventListener("mouseup", () => {
+  isDragging = false;
+});
 
-    draw2DBox(width, height, thickness);
-  }
+canvas.addEventListener("mouseleave", () => {
+  isDragging = false;
+});
 
-  function draw2DBox(width, height, thickness) {
-    const canvas = document.getElementById("hornCanvas");
-    const ctx = canvas.getContext("2d");
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    const scale = 0.5;
-    const offsetX = 50;
-    const offsetY = 50;
-
-    // Yttre rektangel
-    ctx.strokeStyle = "#000";
-    ctx.strokeRect(offsetX, offsetY, width * scale, height * scale);
-
-    // Inre rektangel (visar väggtjocklek)
-    ctx.strokeStyle = "#888";
-    ctx.strokeRect(offsetX + thickness * scale, offsetY + thickness * scale,
-                   (width - 2 * thickness) * scale, (height - 2 * thickness) * scale);
+canvas.addEventListener("mousemove", e => {
+  if (isDragging) {
+    let deltaX = e.clientX - lastX;
+    rotationAngle += deltaX * 0.5; // justera känslighet
+    rotationAngle %= 360;
+    lastX = e.clientX;
+    drawVisualization();
   }
 });
+
+function updateVisualization() {
+  // Läs värden
+  const width = parseFloat(document.getElementById("boxWidth").value);
+  const height = parseFloat(document.getElementById("boxHeight").value);
+  const depth = parseFloat(document.getElementById("boxDepth").value);
+  const wall = parseFloat(document.getElementById("wallThickness").value);
+  const material = document.getElementById("materialType").value;
+
+  // Volymer i m³
+  const outerVolume = (width * height * depth) / 1e9; // mm³ till m³
+  const innerWidth = width - 2 * wall;
+  const innerHeight = height - 2 * wall;
+  const innerDepth = depth - 2 * wall;
+
+  // Skydda mot negativa värden vid för stor väggtjocklek
+  const innerVol = (innerWidth > 0 && innerHeight > 0 && innerDepth > 0) ?
+    (innerWidth * innerHeight * innerDepth) / 1e9 : 0;
+
+  const materialVolume = outerVolume - innerVol; // m³
+  const materialWeight = materialVolume * materialDensities[material]; // kg
+
+  // Uppdatera text
+  document.getElementById("volumeOutput").textContent =
+    `Inre volym: ${(innerVol * 1000).toFixed(2)} liter`;
+  document.getElementById("materialVolumeOutput").textContent =
+    `Materialvolym: ${(materialVolume * 1000).toFixed(2)} liter`;
+  document.getElementById("weightOutput").textContent =
+    `Materialvikt: ${materialWeight.toFixed(2)} kg`;
+
+  drawVisualization();
+}
+
+// Enkel 2D-visualisering i canvas med rotation (vridning horisontellt)
+function drawVisualization() {
+  const width = parseFloat(document.getElementById("boxWidth").value);
+  const height = parseFloat(document.getElementById("boxHeight").value);
+  const depth = parseFloat(document.getElementById("boxDepth").value);
+
+  // Rensa canvas
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  ctx.save();
+
+  // Flytta origo till mitten av canvas (för rotation)
+  ctx.translate(canvas.width / 2, canvas.height / 2);
+
+  // Rotera efter vinkeln
+  ctx.rotate((rotationAngle * Math.PI) / 180);
+
+  // Skala ner storleken för att passa canvas, max 300px i bredd/höjd ungefär
+  const scale = Math.min(300 / width, 300 / height);
+
+  ctx.scale(scale, scale);
+
+  // Rita "låda" som rektangel: bredd x höjd, och djup indikeras med skuggning på höger sida
+  // Djup ritas som parallellogram bredvid rektangeln
+
+  // Basrektangel (frontal vy)
+  ctx.fillStyle = "#0071e3"; // Apple-blå
+  ctx.strokeStyle = "#004a9f";
+  ctx.lineWidth = 0.005; // tunn linje (skalad)
+
+  ctx.fillRect(-width / 2, -height / 2, width, height);
+  ctx.strokeRect(-width / 2, -height / 2, width, height);
+
+  // Djup parallellogram till höger (lite lutande för 3D-känsla)
+  const depthOffsetX = depth * 0.6;
+  const depthOffsetY = depth * 0.3;
+
+  ctx.beginPath();
+  ctx.moveTo(width / 2, -height / 2);
+  ctx.lineTo(width / 2 + depthOffsetX, -height / 2 - depthOffsetY);
+  ctx.lineTo(width / 2 + depthOffsetX, height / 2 - depthOffsetY);
+  ctx.lineTo(width / 2, height / 2);
+  ctx.closePath();
+
+  ctx.fillStyle = "#004a9f";
+  ctx.fill();
+  ctx.stroke();
+
+  // Återställ transformationer
+  ctx.restore();
+}
+
+// Initial körning för att visa något direkt
+updateVisualization();
